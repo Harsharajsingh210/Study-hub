@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result – StudyHub{% endblock %}
+{% block content %}
+
+<!-- Score hero -->
+<div class="result-hero">
+  <div class="score-ring {% if percentage >= 70 %}ring-pass{% elif percentage >= 40 %}ring-mid{% else %}ring-fail{% endif %}">
+    <span class="score-pct">{{ percentage }}%</span>
+    <span class="score-lbl">Score</span>
+  </div>
+  <div class="result-info">
+    <h1>
+      {% if percentage >= 80 %}🏆 Excellent!
+      {% elif percentage >= 60 %}👍 Good Job!
+      {% elif percentage >= 40 %}💪 Keep Going!
+      {% else %}📖 Keep Studying!
+      {% endif %}
+    </h1>
+    <p>You answered <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> correctly.</p>
+    <div class="result-btns">
+      <a href="{{ url_for('quiz') }}"        class="btn-primary">🔄 Retake</a>
+      <a href="{{ url_for('leaderboard') }}" class="btn-ghost">🏆 Leaderboard</a>
+      <a href="{{ url_for('dashboard') }}"   class="btn-ghost">🏠 Dashboard</a>
+    </div>
+  </div>
+</div>
+
+<!-- Review -->
+<section class="section">
+  <h2 class="sec-title">Review Your Answers</h2>
+  <div class="review-list">
+    {% for r in results %}
+    <div class="review-item {{ 'ri-correct' if r.is_correct else 'ri-wrong' }}">
+      <div class="ri-hdr">
+        <span class="ri-icon">{{ '✓' if r.is_correct else '✗' }}</span>
+        <span class="ri-subj">{{ r.subject }}</span>
+      </div>
+      <p class="ri-q">{{ r.question }}</p>
+      <div class="ri-opts">
+        {% for opt in r.options %}
+        <span class="ri-opt
+          {% if loop.index0 == r.correct_index %} ri-correct-opt{% endif %}
+          {% if loop.index0 == r.selected and not r.is_correct %} ri-wrong-opt{% endif %}">
+          {{ ['A','B','C','D'][loop.index0] }}. {{ opt }}
+          {% if loop.index0 == r.correct_index %} ✓{% endif %}
+          {% if loop.index0 == r.selected and not r.is_correct %} ✗{% endif %}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

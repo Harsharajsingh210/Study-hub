@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Updates – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>📢 Announcements</h1>
+  <p>Stay up to date with the latest news and events</p>
+</div>
+
+<div class="updates-grid">
+  {% if updates %}
+    {% for u in updates %}
+    <div class="ucard">
+      <div class="ucard-top">
+        <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+          {{ u.tag }}
+        </span>
+        <span class="ucard-date">📅 {{ u.date }}</span>
+      </div>
+      <h3 class="ucard-title">{{ u.title }}</h3>
+      <p class="ucard-body">{{ u.content }}</p>
+      <div class="ucard-bar" style="background:{{ u.tag_color }}"></div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <!-- Static fallback so page is never empty -->
+    {% set defaults = [
+      {"tag":"Exam",       "tag_color":"#f72585","date":"2024-11-01",
+       "title":"🎉 Mid-Term Exams Schedule Released",
+       "content":"Mid-term examinations will be held from November 18–25. Check the timetable."},
+      {"tag":"Resources",  "tag_color":"#4361ee","date":"2024-10-28",
+       "title":"📚 New Study Materials Added",
+       "content":"Updated notes for Mathematics and Physics uploaded. Check the Notes section."},
+      {"tag":"Achievement","tag_color":"#06d6a0","date":"2024-10-25",
+       "title":"🏆 Quiz Competition Results",
+       "content":"Congratulations! Top scorers will receive certificates next Monday."},
+      {"tag":"Event",      "tag_color":"#fb8500","date":"2024-10-22",
+       "title":"🎓 Guest Lecture on AI & Careers",
+       "content":"Special session on AI and career opportunities – November 10."},
+      {"tag":"Reminder",   "tag_color":"#7209b7","date":"2024-10-20",
+       "title":"📝 Assignment Submission Reminder",
+       "content":"All pending assignments must be submitted by November 5."}
+    ] %}
+    {% for u in defaults %}
+    <div class="ucard">
+      <div class="ucard-top">
+        <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+          {{ u.tag }}
+        </span>
+        <span class="ucard-date">📅 {{ u.date }}</span>
+      </div>
+      <h3 class="ucard-title">{{ u.title }}</h3>
+      <p class="ucard-body">{{ u.content }}</p>
+      <div class="ucard-bar" style="background:{{ u.tag_color }}"></div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+{% endblock %}

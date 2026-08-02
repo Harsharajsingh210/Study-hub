@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Quiz – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>🧠 Knowledge Quiz</h1>
+  <p>Answer all {{ questions|length }} questions and see how you score!</p>
+</div>
+
+<form method="POST" action="{{ url_for('quiz') }}" id="quizForm">
+
+  <!-- Progress -->
+  <div class="qprogress">
+    <span id="qProgressTxt">Question 1 of {{ questions|length }}</span>
+    <div class="qbar"><div class="qfill" id="qFill" style="width:{{ (1 / questions|length * 100)|round }}%"></div></div>
+  </div>
+
+  <!-- Question cards -->
+  <div class="qwrap">
+    {% for q in questions %}
+    <div class="qcard" id="qcard{{ loop.index }}" {% if not loop.first %}style="display:none"{% endif %}>
+      <div class="qcard-hdr">
+        <span class="qnum">Q{{ loop.index }}</span>
+        <span class="qsubj">{{ q.subject }}</span>
+      </div>
+      <p class="qtext">{{ q.question }}</p>
+      <div class="opts">
+        {% for opt in q.options %}
+        <label class="opt" for="q{{ q.id }}_{{ loop.index0 }}">
+          <input type="radio" id="q{{ q.id }}_{{ loop.index0 }}"
+                 name="q{{ q.id }}" value="{{ loop.index0 }}" required/>
+          <span class="opt-letter">{{ ['A','B','C','D'][loop.index0] }}</span>
+          <span class="opt-txt">{{ opt }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Navigation -->
+  <div class="qnav">
+    <button type="button" class="btn-ghost" id="qPrev" onclick="qMove(-1)" disabled>← Prev</button>
+    <span class="qind" id="qInd">1 / {{ questions|length }}</span>
+    <button type="button" class="btn-primary" id="qNext" onclick="qMove(1)">Next →</button>
+    <button type="submit" class="btn-submit" id="qSubmit" style="display:none">🏁 Submit Quiz</button>
+  </div>
+
+</form>
+
+<script>
+  let cur = 1;
+  const tot = {{ questions|length }};
+
+  function qMove(dir) {
+    document.getElementById('qcard' + cur).style.display = 'none';
+    cur += dir;
+    document.getElementById('qcard' + cur).style.display = 'block';
+
+    const pct = (cur / tot * 100).toFixed(0);
+    document.getElementById('qFill').style.width = pct + '%';
+    document.getElementById('qProgressTxt').textContent = 'Question ' + cur + ' of ' + tot;
+    document.getElementById('qInd').textContent = cur + ' / ' + tot;
+
+    document.getElementById('qPrev').disabled = cur === 1;
+    document.getElementById('qNext').style.display   = cur === tot ? 'none'        : 'inline-flex';
+    document.getElementById('qSubmit').style.display = cur === tot ? 'inline-flex' : 'none';
+  }
+
+  // Highlight selected option
+  document.querySelectorAll('.opt input').forEach(inp => {
+    inp.addEventListener('change', () => {
+      inp.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+      inp.closest('.opt').classList.add('sel');
+    });
+  });
+</script>
+{% endblock %}

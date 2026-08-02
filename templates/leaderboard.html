@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>🏆 Leaderboard</h1>
+  <p>Top performers in the StudyHub quiz arena</p>
+</div>
+
+<!-- Podium (top 3) -->
+{% if users and users|length >= 3 %}
+<div class="podium">
+  <!-- 2nd -->
+  <div class="pod-slot">
+    <div class="pod-av">{{ users[1].name[0].upper() }}</div>
+    <div class="pod-name">{{ users[1].name.split()[0] }}</div>
+    <div class="pod-score">{{ users[1].score }} pts</div>
+    <div class="pod-blk blk-2">2</div>
+  </div>
+  <!-- 1st -->
+  <div class="pod-slot pod-first">
+    <div class="pod-crown">👑</div>
+    <div class="pod-av pod-av1">{{ users[0].name[0].upper() }}</div>
+    <div class="pod-name">{{ users[0].name.split()[0] }}</div>
+    <div class="pod-score">{{ users[0].score }} pts</div>
+    <div class="pod-blk blk-1">1</div>
+  </div>
+  <!-- 3rd -->
+  <div class="pod-slot">
+    <div class="pod-av">{{ users[2].name[0].upper() }}</div>
+    <div class="pod-name">{{ users[2].name.split()[0] }}</div>
+    <div class="pod-score">{{ users[2].score }} pts</div>
+    <div class="pod-blk blk-3">3</div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Full table -->
+<section class="section">
+  <h2 class="sec-title">Full Rankings</h2>
+  <div class="lb-table">
+    <div class="lb-head">
+      <span>Rank</span><span>Student</span><span>Score</span><span>Medal</span>
+    </div>
+
+    {% if users %}
+      {% for u in users %}
+      <div class="lb-row {% if u.id == current_user_id %}lb-me{% endif %}">
+        <span class="lb-rank">
+          {% if loop.index == 1 %}🥇
+          {% elif loop.index == 2 %}🥈
+          {% elif loop.index == 3 %}🥉
+          {% else %}#{{ loop.index }}{% endif %}
+        </span>
+        <span class="lb-name-cell">
+          <span class="lb-av">{{ u.name[0].upper() }}</span>
+          {{ u.name }}
+          {% if u.id == current_user_id %}<span class="you-tag">You</span>{% endif %}
+          {% if u.is_admin %}<span class="adm-tag">Admin</span>{% endif %}
+        </span>
+        <span class="lb-pts">{{ u.score }} pts</span>
+        <span class="lb-medal">
+          {% if loop.index == 1 %}🏆
+          {% elif loop.index <= 3 %}⭐
+          {% elif u.score > 0 %}✨
+          {% else %}—{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <!-- Static fallback -->
+      <div class="lb-row"><span class="lb-rank">🥇</span>
+        <span class="lb-name-cell"><span class="lb-av">A</span>Alice Smith</span>
+        <span class="lb-pts">92 pts</span><span class="lb-medal">🏆</span></div>
+      <div class="lb-row"><span class="lb-rank">🥈</span>
+        <span class="lb-name-cell"><span class="lb-av">J</span>John Student</span>
+        <span class="lb-pts">85 pts</span><span class="lb-medal">⭐</span></div>
+      <div class="lb-row"><span class="lb-rank">🥉</span>
+        <span class="lb-name-cell"><span class="lb-av">A</span>Admin User<span class="adm-tag">Admin</span></span>
+        <span class="lb-pts">0 pts</span><span class="lb-medal">—</span></div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

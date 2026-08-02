@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}StudyHub{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+{% if session.user %}
+<!-- ════════ NAVBAR ════════ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="{{ url_for('dashboard') }}" class="nav-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-text">Study<strong>Hub</strong></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="{{ url_for('dashboard') }}"   class="nav-link {% if request.endpoint=='dashboard'   %}active{% endif %}">Dashboard</a></li>
+      <li><a href="{{ url_for('notes') }}"       class="nav-link {% if request.endpoint=='notes'       %}active{% endif %}">Notes</a></li>
+      <li><a href="{{ url_for('quiz') }}"        class="nav-link {% if request.endpoint=='quiz'        %}active{% endif %}">Quiz</a></li>
+      <li><a href="{{ url_for('updates') }}"     class="nav-link {% if request.endpoint=='updates'     %}active{% endif %}">Updates</a></li>
+      <li><a href="{{ url_for('leaderboard') }}" class="nav-link {% if request.endpoint=='leaderboard' %}active{% endif %}">Leaderboard</a></li>
+      {% if session.is_admin %}
+      <li><a href="{{ url_for('admin') }}"       class="nav-link admin-link {% if request.endpoint=='admin' %}active{% endif %}">⚙ Admin</a></li>
+      {% endif %}
+    </ul>
+
+    <div class="nav-user">
+      <div class="user-badge">{{ session.user[0].upper() }}</div>
+      <span class="user-name">{{ session.user.split()[0] }}</span>
+      <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+    </div>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="{{ url_for('dashboard') }}"   class="mob-link">🏠 Dashboard</a>
+    <a href="{{ url_for('notes') }}"       class="mob-link">📚 Notes</a>
+    <a href="{{ url_for('quiz') }}"        class="mob-link">🧠 Quiz</a>
+    <a href="{{ url_for('updates') }}"     class="mob-link">📢 Updates</a>
+    <a href="{{ url_for('leaderboard') }}" class="mob-link">🏆 Leaderboard</a>
+    {% if session.is_admin %}
+    <a href="{{ url_for('admin') }}"       class="mob-link">⚙️ Admin</a>
+    {% endif %}
+    <a href="{{ url_for('logout') }}"      class="mob-link mob-logout">🚪 Logout</a>
+  </div>
+</nav>
+{% endif %}
+
+<!-- ════════ FLASH MESSAGES ════════ -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container" id="flashContainer">
+    {% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">
+      <span>{{ msg }}</span>
+      <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<!-- ════════ PAGE CONTENT ════════ -->
+<main class="main-wrap {% if not session.user %}auth-wrap{% endif %}">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ════════ FOOTER ════════ -->
+{% if session.user %}
+<footer class="footer">
+  <p>
+    © 2025 <strong>StudyHub</strong> &nbsp;·&nbsp; Built for students, by students
+    &nbsp;·&nbsp; <a href="{{ url_for('leaderboard') }}">🏆 Leaderboard</a>
+  </p>
+</footer>
+{% endif %}
+
+<script>
+  // Hamburger menu toggle
+  const btn  = document.getElementById('hamburgerBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  }
+  // Auto-dismiss flash messages after 4 s
+  setTimeout(() => {
+    document.querySelectorAll('.flash').forEach(el => el.remove());
+  }, 4000);
+</script>
+</body>
+</html>

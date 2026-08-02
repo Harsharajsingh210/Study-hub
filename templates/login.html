@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Login – StudyHub{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <div class="auth-header">
+    <div class="auth-logo">⬡</div>
+    <h1>Study<strong>Hub</strong></h1>
+    <p>Your all-in-one student companion</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('login') }}" class="auth-form" autocomplete="on">
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email"
+             placeholder="you@school.com" required autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password"
+             placeholder="••••••••" required autocomplete="current-password"/>
+    </div>
+    <button type="submit" class="btn-primary w-full">Sign In →</button>
+  </form>
+
+  <p class="auth-switch">
+    Don't have an account? <a href="{{ url_for('signup') }}">Create one</a>
+  </p>
+
+  <div class="demo-box">
+    <p class="demo-title">Demo Accounts</p>
+    <div class="demo-row"><span>Admin</span><span>admin@school.com / admin123</span></div>
+    <div class="demo-row"><span>Student</span><span>john@school.com / student123</span></div>
+  </div>
+</div>
+{% endblock %}

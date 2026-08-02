@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – StudyHub{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="dash-hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Welcome back 👋</p>
+    <h1>Hello, <span class="accent">{{ session.user.split()[0] }}</span></h1>
+    <p class="hero-sub">What would you like to study today?</p>
+  </div>
+  <div class="hero-art">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <span class="hero-emoji">🎓</span>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-num">{{ notes_count }}</span>
+    <span class="stat-lbl">Study Notes</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">{{ quiz_count }}</span>
+    <span class="stat-lbl">Quiz Questions</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">6</span>
+    <span class="stat-lbl">Subjects</span>
+  </div>
+</div>
+
+<!-- Quick-access cards -->
+<section class="section">
+  <h2 class="sec-title">Quick Access</h2>
+  <div class="nav-cards">
+
+    <a href="{{ url_for('notes') }}" class="ncard ncard-blue">
+      <span class="ncard-icon">📚</span>
+      <div class="ncard-body">
+        <h3>Study Notes</h3>
+        <p>Browse &amp; download subject-wise notes</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+
+    <a href="{{ url_for('quiz') }}" class="ncard ncard-purple">
+      <span class="ncard-icon">🧠</span>
+      <div class="ncard-body">
+        <h3>Take a Quiz</h3>
+        <p>Test your knowledge with MCQs</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+
+    <a href="{{ url_for('updates') }}" class="ncard ncard-pink">
+      <span class="ncard-icon">📢</span>
+      <div class="ncard-body">
+        <h3>Updates</h3>
+        <p>Latest announcements &amp; news</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+
+    <a href="{{ url_for('leaderboard') }}" class="ncard ncard-teal">
+      <span class="ncard-icon">🏆</span>
+      <div class="ncard-body">
+        <h3>Leaderboard</h3>
+        <p>See top scorers in quizzes</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+
+    {% if session.is_admin %}
+    <a href="{{ url_for('admin') }}" class="ncard ncard-orange">
+      <span class="ncard-icon">⚙️</span>
+      <div class="ncard-body">
+        <h3>Admin Panel</h3>
+        <p>Manage notes, users &amp; announcements</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- Latest updates preview -->
+<section class="section">
+  <div class="sec-header">
+    <h2 class="sec-title">Latest Updates</h2>
+    <a href="{{ url_for('updates') }}" class="see-all">See all →</a>
+  </div>
+
+  {% if updates %}
+  <div class="update-strip">
+    {% for u in updates %}
+    <div class="ustrip-item">
+      <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+        {{ u.tag }}
+      </span>
+      <div class="ustrip-body">
+        <h4>{{ u.title }}</h4>
+        <p>{{ u.content[:100] }}{% if u.content|length > 100 %}…{% endif %}</p>
+      </div>
+      <span class="ustrip-date">{{ u.date }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="update-strip">
+    <div class="ustrip-item">
+      <span class="utag" style="background:#f7258518;color:#f72585;border:1px solid #f7258535">Exam</span>
+      <div class="ustrip-body">
+        <h4>🎉 Mid-Term Exams Schedule Released</h4>
+        <p>Mid-term examinations will be held from November 18–25.</p>
+      </div>
+      <span class="ustrip-date">2024-11-01</span>
+    </div>
+    <div class="ustrip-item">
+      <span class="utag" style="background:#4361ee18;color:#4361ee;border:1px solid #4361ee35">Resources</span>
+      <div class="ustrip-body">
+        <h4>📚 New Study Materials Added</h4>
+        <p>Updated notes for Mathematics and Physics have been uploaded.</p>
+      </div>
+      <span class="ustrip-date">2024-10-28</span>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+{% endblock %}
