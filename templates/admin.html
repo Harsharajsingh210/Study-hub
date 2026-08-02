@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>⚙️ Admin Panel</h1>
+  <p>Manage notes, announcements and users</p>
+</div>
+
+<!-- Stats -->
+<div class="adm-stats">
+  <div class="adm-stat"><span class="adm-n">{{ users|length }}</span><span>Users</span></div>
+  <div class="adm-stat"><span class="adm-n">{{ notes|length }}</span><span>Notes</span></div>
+  <div class="adm-stat"><span class="adm-n">{{ updates|length }}</span><span>Announcements</span></div>
+</div>
+
+<!-- ── Upload Note ─────────────────────────── -->
+<div class="adm-box">
+  <h2>📤 Upload New Note</h2>
+  <form method="POST" action="{{ url_for('upload_note') }}"
+        enctype="multipart/form-data" class="adm-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Subject *</label>
+        <input type="text" name="subject" placeholder="e.g. Mathematics" required/>
+      </div>
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" placeholder="Note title" required/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" rows="2" placeholder="Brief description…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Icon (emoji)</label>
+        <input type="text" name="icon" value="📄" maxlength="4"/>
+      </div>
+      <div class="form-group">
+        <label>Accent Color</label>
+        <input type="color" name="color" value="#4361ee"/>
+      </div>
+      <div class="form-group">
+        <label>PDF File (optional)</label>
+        <input type="file" name="file" accept=".pdf"/>
+      </div>
+    </div>
+    <button type="submit" class="btn-primary">📤 Upload Note</button>
+  </form>
+</div>
+
+<!-- ── Notes Table ────────────────────────── -->
+<div class="adm-box">
+  <h2>📚 Manage Notes ({{ notes|length }})</h2>
+  <div class="adm-tbl">
+    <div class="adm-th">
+      <span>Subject</span><span>Title</span><span>PDF</span><span>Action</span>
+    </div>
+    {% if notes %}
+      {% for n in notes %}
+      <div class="adm-tr">
+        <span><strong>{{ n.subject }}</strong></span>
+        <span>{{ n.title[:38] }}{% if n.title|length > 38 %}…{% endif %}</span>
+        <span>{{ '✅' if n.filename else '—' }}</span>
+        <span>
+          <form method="POST" action="{{ url_for('delete_note', note_id=n.id) }}"
+                onsubmit="return confirm('Delete this note?')">
+            <button type="submit" class="btn-del">🗑 Delete</button>
+          </form>
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="adm-empty">No notes yet. Upload one above!</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── Post Announcement ─────────────────── -->
+<div class="adm-box">
+  <h2>📢 Post Announcement</h2>
+  <form method="POST" action="{{ url_for('add_update') }}" class="adm-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" placeholder="Announcement title" required/>
+      </div>
+      <div class="form-group">
+        <label>Tag</label>
+        <input type="text" name="tag" value="General" placeholder="e.g. Exam, Event"/>
+      </div>
+      <div class="form-group">
+        <label>Tag Color</label>
+        <input type="color" name="tag_color" value="#4361ee"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Content *</label>
+      <textarea name="content" rows="3" placeholder="Write announcement here…" required></textarea>
+    </div>
+    <button type="submit" class="btn-primary">📢 Post Announcement</button>
+  </form>
+</div>
+
+<!-- ── Announcements Table ───────────────── -->
+<div class="adm-box">
+  <h2>📋 Manage Announcements ({{ updates|length }})</h2>
+  <div class="adm-tbl">
+    <div class="adm-th">
+      <span>Title</span><span>Tag</span><span>Date</span><span>Action</span>
+    </div>
+    {% if updates %}
+      {% for u in updates %}
+      <div class="adm-tr">
+        <span>{{ u.title[:38] }}{% if u.title|length > 38 %}…{% endif %}</span>
+        <span><span class="mini-tag" style="background:{{ u.tag_color }}25;color:{{ u.tag_color }}">{{ u.tag }}</span></span>
+        <span>{{ u.date }}</span>
+        <span>
+          <form method="POST" action="{{ url_for('delete_update', update_id=u.id) }}"
+                onsubmit="return confirm('Delete this announcement?')">
+            <button type="submit" class="btn-del">🗑 Delete</button>
+          </form>
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="adm-empty">No announcements yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── Users Table ───────────────────────── -->
+<div class="adm-box">
+  <h2>👥 Registered Users ({{ users|length }})</h2>
+  <div class="adm-tbl">
+    <div class="adm-th">
+      <span>Name</span><span>Email</span><span>Role</span><span>Score</span>
+    </div>
+    {% for u in users %}
+    <div class="adm-tr">
+      <span class="u-name-cell">
+        <span class="u-av">{{ u.name[0].upper() }}</span>{{ u.name }}
+      </span>
+      <span>{{ u.email }}</span>
+      <span>{{ '🛡 Admin' if u.is_admin else '🎓 Student' }}</span>
+      <span><strong>{{ u.score }}</strong> pts</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
