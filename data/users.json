@@ -22,5 +22,13 @@
     "password": "4e40e8ffe0ee32fa53e139147ed559229a5930f89c2204706fc174beb36210b3",
     "is_admin": false,
     "score": 92
+  },
+  {
+    "id": "d83feb1b-5376-4423-b3e7-9607241f9933",
+    "name": "akshay",
+    "email": "akkuprajapati7984@gmail.com",
+    "password": "055efb1c7396a8c67c70815e4caa8f9d6a3a698e0471c6401e2875ca15319650",
+    "is_admin": false,
+    "score": 0
   }
 ]
