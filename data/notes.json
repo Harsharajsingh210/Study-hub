@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "subject": "Mathematics",
+    "title": "Calculus – Differentiation & Integration",
+    "description": "Limits, derivatives, integrals and their applications.",
+    "filename": null,
+    "icon": "📐",
+    "color": "#4361ee"
+  },
+  {
+    "id": "2",
+    "subject": "Physics",
+    "title": "Mechanics – Newton's Laws",
+    "description": "Motion, forces, energy and momentum.",
+    "filename": null,
+    "icon": "⚛️",
+    "color": "#7209b7"
+  },
+  {
+    "id": "3",
+    "subject": "Chemistry",
+    "title": "Organic Chemistry Basics",
+    "description": "Hydrocarbons, functional groups and reactions.",
+    "filename": null,
+    "icon": "🧪",
+    "color": "#f72585"
+  },
+  {
+    "id": "4",
+    "subject": "Computer Science",
+    "title": "Data Structures & Algorithms",
+    "description": "Arrays, linked lists, trees, sorting and searching.",
+    "filename": null,
+    "icon": "💻",
+    "color": "#4cc9f0"
+  },
+  {
+    "id": "5",
+    "subject": "Biology",
+    "title": "Cell Biology & Genetics",
+    "description": "Cell structure, DNA replication, genetics.",
+    "filename": null,
+    "icon": "🧬",
+    "color": "#06d6a0"
+  },
+  {
+    "id": "6",
+    "subject": "Information Security",
+    "title": "Cyber Security – Unit 5",
+    "description": "Cyber threats, attacks, vulnerabilities and cybercrime.",
+    "filename": null,
+    "icon": "🔐",
+    "color": "#fb8500"
+  }
+]

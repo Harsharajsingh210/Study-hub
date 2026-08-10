@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "title": "🎉 Mid-Term Exams Schedule Released",
+    "content": "Mid-term examinations will be held from November 18–25.",
+    "date": "2024-11-01",
+    "tag": "Exam",
+    "tag_color": "#f72585"
+  },
+  {
+    "id": "2",
+    "title": "📚 New Study Materials Added",
+    "content": "Updated notes for Mathematics and Physics uploaded. Check Notes section.",
+    "date": "2024-10-28",
+    "tag": "Resources",
+    "tag_color": "#4361ee"
+  },
+  {
+    "id": "3",
+    "title": "🏆 Quiz Competition Results",
+    "content": "Congratulations! Top scorers will receive certificates next Monday.",
+    "date": "2024-10-25",
+    "tag": "Achievement",
+    "tag_color": "#06d6a0"
+  },
+  {
+    "id": "4",
+    "title": "🎓 Guest Lecture on AI & Careers",
+    "content": "Special session on AI and career opportunities – Nov 10.",
+    "date": "2024-10-22",
+    "tag": "Event",
+    "tag_color": "#fb8500"
+  },
+  {
+    "id": "5",
+    "title": "📝 Assignment Submission Reminder",
+    "content": "All pending assignments must be submitted by November 5.",
+    "date": "2024-10-20",
+    "tag": "Reminder",
+    "tag_color": "#7209b7"
+  }
+]

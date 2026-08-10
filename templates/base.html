@@ -20,7 +20,7 @@
     </a>
 
     <ul class="nav-links">
-      <li><a href="{{ url_for('dashboard') }}"   class="nav-link {% if request.endpoint=='dashboard'   %}active{% endif %}">Dashboard</a></li>
+      <li><a href="{{ url_for('dashboard') }}"   class="nav-link {% if request.endpoint=='dashboard'   %}active{% endif %}">Dashboard</a></li>       
       <li><a href="{{ url_for('notes') }}"       class="nav-link {% if request.endpoint=='notes'       %}active{% endif %}">Notes</a></li>
       <li><a href="{{ url_for('quiz') }}"        class="nav-link {% if request.endpoint=='quiz'        %}active{% endif %}">Quiz</a></li>
       <li><a href="{{ url_for('updates') }}"     class="nav-link {% if request.endpoint=='updates'     %}active{% endif %}">Updates</a></li>

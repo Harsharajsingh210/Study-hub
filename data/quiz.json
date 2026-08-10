@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "subject": "Mathematics",
+    "question": "What is the derivative of sin(x)?",
+    "options": [
+      "cos(x)",
+      "-cos(x)",
+      "tan(x)",
+      "-sin(x)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 2,
+    "subject": "Science",
+    "question": "Which planet is known as the Red Planet?",
+    "options": [
+      "Venus",
+      "Mars",
+      "Jupiter",
+      "Saturn"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 3,
+    "subject": "Computer Science",
+    "question": "What does CPU stand for?",
+    "options": [
+      "Central Process Unit",
+      "Central Processing Unit",
+      "Computer Personal Unit",
+      "Control Processing Unit"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 4,
+    "subject": "Chemistry",
+    "question": "What is the chemical symbol for Gold?",
+    "options": [
+      "Go",
+      "Gd",
+      "Au",
+      "Ag"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 5,
+    "subject": "Biology",
+    "question": "What is the powerhouse of the cell?",
+    "options": [
+      "Nucleus",
+      "Ribosome",
+      "Mitochondria",
+      "Golgi Apparatus"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 6,
+    "subject": "English",
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "options": [
+      "Charles Dickens",
+      "Mark Twain",
+      "William Shakespeare",
+      "Jane Austen"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 7,
+    "subject": "Physics",
+    "question": "What is Newton's Second Law of Motion?",
+    "options": [
+      "F = mv",
+      "F = ma",
+      "F = m/a",
+      "F = a/m"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 8,
+    "subject": "Mathematics",
+    "question": "What is the value of π to 2 decimal places?",
+    "options": [
+      "3.12",
+      "3.41",
+      "3.14",
+      "3.16"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 9,
+    "subject": "Computer Science",
+    "question": "Which data structure uses LIFO order?",
+    "options": [
+      "Queue",
+      "Array",
+      "Stack",
+      "Linked List"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 10,
+    "subject": "Cyber Security",
+    "question": "Which attack sends fake emails to steal credentials?",
+    "options": [
+      "Ransomware",
+      "Phishing",
+      "DoS",
+      "Worm"
+    ],
+    "answer": 1
+  }
+]
