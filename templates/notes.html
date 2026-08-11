@@ -40,7 +40,21 @@
     <h3 class="note-title">{{ n.title }}</h3>
     <p class="note-desc">{{ n.description }}</p>
     <div class="note-foot">
-  {% if n.filename %}
+  {% if n.files %}
+    {% for file in n.files %}
+    <div class="note-file-actions">
+      <strong>{{ file.label }}</strong>
+      <button type="button"
+              class="btn-primary note-preview-btn"
+              data-pdf-url="{{ url_for('view_note_file', note_id=n.id, file_index=loop.index0) }}"
+              data-note-title="{{ n.title }} — {{ file.label }}">
+        📖 Preview PDF
+      </button>
+      <a href="{{ url_for('download_note_file', note_id=n.id, file_index=loop.index0) }}"
+         class="btn-dl">⬇ Download PDF</a>
+    </div>
+    {% endfor %}
+  {% elif n.filename %}
 
   <button type="button"
           class="btn-primary note-preview-btn"

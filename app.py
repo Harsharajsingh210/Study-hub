@@ -341,6 +341,19 @@ def download_note(note_id):
     return redirect(url_for("notes"))
 
 
+@app.route("/notes/download/<note_id>/<int:file_index>")
+@login_required
+def download_note_file(note_id, file_index):
+    note = next((n for n in load_json("notes.json") if n["id"] == note_id), None)
+    files = note.get("files", []) if note else []
+    if 0 <= file_index < len(files):
+        return send_from_directory(app.config["UPLOAD_FOLDER"],
+                                   files[file_index]["filename"],
+                                   as_attachment=True)
+    flash("File not available for download yet.", "warning")
+    return redirect(url_for("notes"))
+
+
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz():
@@ -507,6 +520,19 @@ def view_note(note_id):
             as_attachment=False
         )
 
+    flash("File not available for viewing yet.", "warning")
+    return redirect(url_for("notes"))
+
+
+@app.route("/notes/view/<note_id>/<int:file_index>")
+@login_required
+def view_note_file(note_id, file_index):
+    note = next((n for n in load_json("notes.json") if n["id"] == note_id), None)
+    files = note.get("files", []) if note else []
+    if 0 <= file_index < len(files):
+        return send_from_directory(app.config["UPLOAD_FOLDER"],
+                                   files[file_index]["filename"],
+                                   as_attachment=False)
     flash("File not available for viewing yet.", "warning")
     return redirect(url_for("notes"))
 

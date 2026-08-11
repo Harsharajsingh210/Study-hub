@@ -64,20 +64,14 @@
   },
   {
     "id": "8",
-    "subject": "Information Security",
-    "title": "Unit 1",
-    "description": "Information Security — Unit 1 study material.",
-    "filename": "IS_Unit_1.pdf",
-    "icon": "🔐",
-    "color": "#fb8500"
-  },
-  {
-    "id": "9",
-    "subject": "Gujarati",
-    "title": "Chapter 2",
-    "description": "Gujarati — Chapter 2 study material.",
-    "filename": "Gujarati_Chapter_2.pdf",
-    "icon": "📖",
-    "color": "#e76f51"
+    "subject": "CHASM",
+    "title": "Chapter 1 & Chapter 2",
+    "description": "CHASM study material for Chapter 1 and Chapter 2.",
+    "files": [
+      {"label": "Chapter 1", "filename": "IS_Unit_1.pdf"},
+      {"label": "Chapter 2", "filename": "Gujarati_Chapter_2.pdf"}
+    ],
+    "icon": "📚",
+    "color": "#4361ee"
   }
 ]
