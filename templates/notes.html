@@ -42,11 +42,12 @@
     <div class="note-foot">
   {% if n.filename %}
 
-  <a href="{{ url_for('view_note', note_id=n.id) }}"
-     class="btn-primary"
-     target="_blank">
-    📖 View PDF
-  </a>
+  <button type="button"
+          class="btn-primary note-preview-btn"
+          data-pdf-url="{{ url_for('view_note', note_id=n.id) }}"
+          data-note-title="{{ n.title }}">
+    📖 Preview PDF
+  </button>
 
   <a href="{{ url_for('download_note', note_id=n.id) }}"
      class="btn-dl">
@@ -69,6 +70,19 @@
 </div>
 {% endif %}
 
+<div class="pdf-modal" id="pdfPreview" role="dialog" aria-modal="true"
+     aria-labelledby="pdfPreviewTitle" hidden>
+  <div class="pdf-modal-backdrop" data-close-preview></div>
+  <section class="pdf-modal-panel">
+    <header class="pdf-modal-header">
+      <h2 id="pdfPreviewTitle">PDF Preview</h2>
+      <button type="button" class="pdf-modal-close" data-close-preview
+              aria-label="Close PDF preview">&times;</button>
+    </header>
+    <iframe id="pdfPreviewFrame" class="pdf-preview-frame" title="PDF preview"></iframe>
+  </section>
+</div>
+
 <script>
   document.querySelectorAll('.note-card[data-note-color]').forEach((card) => {
     const color = card.dataset.noteColor;
@@ -77,6 +91,33 @@
     card.style.setProperty('--ac', color);
     subject.style.backgroundColor = `${color}18`;
     subject.style.color = color;
+  });
+
+  const previewModal = document.getElementById('pdfPreview');
+  const previewFrame = document.getElementById('pdfPreviewFrame');
+  const previewTitle = document.getElementById('pdfPreviewTitle');
+
+  document.querySelectorAll('.note-preview-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      previewFrame.src = button.dataset.pdfUrl;
+      previewTitle.textContent = button.dataset.noteTitle;
+      previewModal.hidden = false;
+      document.body.classList.add('modal-open');
+    });
+  });
+
+  const closePreview = () => {
+    previewModal.hidden = true;
+    previewFrame.src = '';
+    document.body.classList.remove('modal-open');
+  };
+
+  previewModal.querySelectorAll('[data-close-preview]').forEach((element) => {
+    element.addEventListener('click', closePreview);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !previewModal.hidden) closePreview();
   });
 </script>
 {% endblock %}
