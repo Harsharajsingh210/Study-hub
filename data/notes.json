@@ -61,5 +61,23 @@
     "filename": "IS_Unit_2_261..pdf",
     "icon": "🔐",
     "color": "#fb8500"
+  },
+  {
+    "id": "8",
+    "subject": "Information Security",
+    "title": "Unit 1",
+    "description": "Information Security — Unit 1 study material.",
+    "filename": "IS_Unit_1.pdf",
+    "icon": "🔐",
+    "color": "#fb8500"
+  },
+  {
+    "id": "9",
+    "subject": "Gujarati",
+    "title": "Chapter 2",
+    "description": "Gujarati — Chapter 2 study material.",
+    "filename": "Gujarati_Chapter_2.pdf",
+    "icon": "📖",
+    "color": "#e76f51"
   }
 ]
