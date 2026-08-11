@@ -36,7 +36,7 @@ IS_RENDER      = bool(os.environ.get("RENDER"))          # Render sets this auto
 IS_VERCEL      = bool(os.environ.get("VERCEL"))           # Vercel sets this automatically
 IS_SERVERLESS  = IS_RENDER or IS_VERCEL
 DATA_DIR      = "/tmp/studyhub/data"    if IS_SERVERLESS else "data"
-UPLOAD_FOLDER = "/tmp/studyhub/uploads" if IS_SERVERLESS else os.path.join("static", "uploads", "notes")
+UPLOAD_FOLDER = "/tmp/studyhub/uploads" if IS_SERVERLESS else os.path.join("static", "notes")
 
 ALLOWED_EXTENSIONS              = {"pdf"}
 app.config["UPLOAD_FOLDER"]     = UPLOAD_FOLDER
@@ -47,6 +47,10 @@ os.makedirs(DATA_DIR,      exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
+@app.route("/notes/file/<filename>")
+def note_file(filename):
+    notes_folder = os.path.join(app.root_path, "static", "notes")
+    return send_from_directory(notes_folder, filename)
 # ─────────────────────────────────────────────────────────────
 #  Helper Functions
 # ─────────────────────────────────────────────────────────────
@@ -490,5 +494,22 @@ def delete_update(update_id):
 # ─────────────────────────────────────────────────────────────
 #  Run
 # ─────────────────────────────────────────────────────────────
+@app.route("/notes/view/<note_id>")
+@login_required
+def view_note(note_id):
+    all_notes = load_json("notes.json")
+    note = next((n for n in all_notes if n["id"] == note_id), None)
+
+    if note and note.get("filename"):
+        return send_from_directory(
+            app.config["UPLOAD_FOLDER"],
+            note["filename"],
+            as_attachment=False
+        )
+
+    flash("File not available for viewing yet.", "warning")
+    return redirect(url_for("notes"))
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

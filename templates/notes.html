@@ -32,20 +32,31 @@
 {% if notes %}
 <div class="notes-grid">
   {% for n in notes %}
-  <div class="note-card" style="--ac:{{ n.color }}">
+  <div class="note-card" data-note-color="{{ n.color }}">
     <div class="note-top">
       <span class="note-ico">{{ n.icon }}</span>
-      <span class="note-subj" style="background:{{ n.color }}18;color:{{ n.color }}">{{ n.subject }}</span>
+      <span class="note-subj">{{ n.subject }}</span>
     </div>
     <h3 class="note-title">{{ n.title }}</h3>
     <p class="note-desc">{{ n.description }}</p>
     <div class="note-foot">
-      {% if n.filename %}
-      <a href="{{ url_for('download_note', note_id=n.id) }}" class="btn-dl">⬇ Download PDF</a>
-      {% else %}
-      <span class="btn-soon">📖 Coming Soon</span>
-      {% endif %}
-    </div>
+  {% if n.filename %}
+
+  <a href="{{ url_for('view_note', note_id=n.id) }}"
+     class="btn-primary"
+     target="_blank">
+    📖 View PDF
+  </a>
+
+  <a href="{{ url_for('download_note', note_id=n.id) }}"
+     class="btn-dl">
+    ⬇ Download PDF
+  </a>
+
+  {% else %}
+  <span class="btn-soon">📖 Coming Soon</span>
+  {% endif %}
+</div>
   </div>
   {% endfor %}
 </div>
@@ -58,4 +69,14 @@
 </div>
 {% endif %}
 
+<script>
+  document.querySelectorAll('.note-card[data-note-color]').forEach((card) => {
+    const color = card.dataset.noteColor;
+    const subject = card.querySelector('.note-subj');
+
+    card.style.setProperty('--ac', color);
+    subject.style.backgroundColor = `${color}18`;
+    subject.style.color = color;
+  });
+</script>
 {% endblock %}
