@@ -21,7 +21,7 @@ from flask import (Flask, render_template, request, redirect,
 from functools import wraps
 from datetime import datetime
 from werkzeug.utils import secure_filename
-import json, os, hashlib, uuid, shutil
+import json, os, hashlib, uuid
 
 # ─────────────────────────────────────────────────────────────
 #  App Setup
@@ -210,6 +210,17 @@ def seed_data():
              "date": "2024-10-20", "tag": "Reminder",    "tag_color": "#7209b7"},
         ])
 
+    # Assignments
+    if not os.path.exists(os.path.join(DATA_DIR, "assignments.json")):
+        save_json("assignments.json", [
+            {"id": "1", "subject": "Mathematics", "title": "Calculus Practice Set",
+             "description": "Complete questions 1–15 from the differentiation worksheet.",
+             "due_date": "2026-08-20", "color": "#4361ee"},
+            {"id": "2", "subject": "Information Security", "title": "Cryptography Report",
+             "description": "Write a short report on symmetric encryption techniques.",
+             "due_date": "2026-08-23", "color": "#fb8500"},
+        ])
+
 # Run seed at module load (works with gunicorn workers too)
 seed_data()
 
@@ -297,10 +308,12 @@ def dashboard():
     updates     = load_json("updates.json")[:3]
     notes_count = len(load_json("notes.json"))
     quiz_count  = len(load_json("quiz.json"))
+    assignments_count = len(load_json("assignments.json"))
     return render_template("dashboard.html",
                            updates=updates,
                            notes_count=notes_count,
-                           quiz_count=quiz_count)
+                           quiz_count=quiz_count,
+                           assignments_count=assignments_count)
 
 
 @app.route("/notes")
@@ -400,6 +413,18 @@ def updates():
     return render_template("updates.html", updates=load_json("updates.json"))
 
 
+@app.route("/assignments")
+@login_required
+def assignments():
+    all_assignments = load_json("assignments.json")
+    subject_filter = request.args.get("subject", "").strip()
+    if subject_filter:
+        all_assignments = [a for a in all_assignments if a["subject"] == subject_filter]
+    subjects = sorted({a["subject"] for a in load_json("assignments.json")})
+    return render_template("assignments.html", assignments=all_assignments,
+                           subjects=subjects, subject_filter=subject_filter)
+
+
 @app.route("/leaderboard")
 @login_required
 def leaderboard():
@@ -420,7 +445,8 @@ def admin():
     return render_template("admin.html",
                            users=load_json("users.json"),
                            notes=load_json("notes.json"),
-                           updates=load_json("updates.json"))
+                           updates=load_json("updates.json"),
+                           assignments=load_json("assignments.json"))
 
 
 @app.route("/admin/upload_note", methods=["POST"])
@@ -501,6 +527,37 @@ def delete_update(update_id):
     save_json("updates.json",
               [u for u in load_json("updates.json") if u["id"] != update_id])
     flash("Announcement deleted.", "info")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/add_assignment", methods=["POST"])
+@login_required
+@admin_required
+def add_assignment():
+    subject = request.form.get("subject", "").strip()
+    title = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    due_date = request.form.get("due_date", "").strip()
+    color = request.form.get("color", "#4361ee").strip()
+    if not all([subject, title, description, due_date]):
+        flash("Subject, title, description and due date are required.", "danger")
+        return redirect(url_for("admin"))
+    assignment_list = load_json("assignments.json")
+    assignment_list.insert(0, {"id": str(uuid.uuid4()), "subject": subject,
+                                "title": title, "description": description,
+                                "due_date": due_date, "color": color})
+    save_json("assignments.json", assignment_list)
+    flash("Assignment posted successfully!", "success")
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/delete_assignment/<assignment_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_assignment(assignment_id):
+    save_json("assignments.json", [a for a in load_json("assignments.json")
+                                   if a["id"] != assignment_id])
+    flash("Assignment deleted.", "info")
     return redirect(url_for("admin"))
 
 

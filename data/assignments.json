@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "subject": "Mathematics",
+    "title": "Calculus Practice Set",
+    "description": "Complete questions 1–15 from the differentiation worksheet.",
+    "due_date": "2026-08-20",
+    "color": "#4361ee"
+  },
+  {
+    "id": "2",
+    "subject": "Information Security",
+    "title": "Cryptography Report",
+    "description": "Write a short report on symmetric encryption techniques.",
+    "due_date": "2026-08-23",
+    "color": "#fb8500"
+  }
+]

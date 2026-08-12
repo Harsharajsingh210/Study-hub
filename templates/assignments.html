@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Assignments – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>📝 Assignments</h1>
+  <p>View and complete subject-wise assignments before their due dates</p>
+</div>
+
+<div class="filter-bar">
+  <form method="GET" action="{{ url_for('assignments') }}" class="filter-form">
+    <select name="subject" class="filter-sel" aria-label="Filter assignments by subject">
+      <option value="">All Subjects</option>
+      {% for subject in subjects %}
+      <option value="{{ subject }}" {% if subject == subject_filter %}selected{% endif %}>{{ subject }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn-primary">Filter</button>
+    {% if subject_filter %}<a href="{{ url_for('assignments') }}" class="btn-ghost">Clear</a>{% endif %}
+  </form>
+</div>
+
+{% if assignments %}
+<div class="assignments-grid">
+  {% for assignment in assignments %}
+  <article class="assignment-card" data-assignment-color="{{ assignment.color }}">
+    <div class="assignment-top">
+      <span class="assignment-subject">{{ assignment.subject }}</span>
+      <span class="assignment-due">Due: {{ assignment.due_date }}</span>
+    </div>
+    <h2>{{ assignment.title }}</h2>
+    <p>{{ assignment.description }}</p>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <p class="empty-ico">📝</p>
+  <h3>No assignments found</h3>
+  <p>There are no assignments for this subject yet.</p>
+</div>
+{% endif %}
+
+<script>
+  document.querySelectorAll('.assignment-card').forEach((card) => {
+    const color = card.dataset.assignmentColor;
+    if (/^#[0-9a-f]{6}$/i.test(color)) {
+      card.style.setProperty('--assignment-color', color);
+      const subject = card.querySelector('.assignment-subject');
+      subject.style.color = color;
+      subject.style.backgroundColor = `${color}18`;
+    }
+  });
+</script>
+{% endblock %}

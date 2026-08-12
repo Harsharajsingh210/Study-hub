@@ -10,7 +10,7 @@
 </head>
 <body>
 
-{% if session.user %}
+{% if session.get('user') %}
 <!-- ════════ NAVBAR ════════ -->
 <nav class="navbar">
   <div class="nav-inner">
@@ -22,17 +22,18 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('dashboard') }}"   class="nav-link {% if request.endpoint=='dashboard'   %}active{% endif %}">Dashboard</a></li>       
       <li><a href="{{ url_for('notes') }}"       class="nav-link {% if request.endpoint=='notes'       %}active{% endif %}">Notes</a></li>
+      <li><a href="{{ url_for('assignments') }}" class="nav-link {% if request.endpoint=='assignments' %}active{% endif %}">Assignments</a></li>
       <li><a href="{{ url_for('quiz') }}"        class="nav-link {% if request.endpoint=='quiz'        %}active{% endif %}">Quiz</a></li>
       <li><a href="{{ url_for('updates') }}"     class="nav-link {% if request.endpoint=='updates'     %}active{% endif %}">Updates</a></li>
       <li><a href="{{ url_for('leaderboard') }}" class="nav-link {% if request.endpoint=='leaderboard' %}active{% endif %}">Leaderboard</a></li>
-      {% if session.is_admin %}
+      {% if session.get('is_admin') %}
       <li><a href="{{ url_for('admin') }}"       class="nav-link admin-link {% if request.endpoint=='admin' %}active{% endif %}">⚙ Admin</a></li>
       {% endif %}
     </ul>
 
     <div class="nav-user">
-      <div class="user-badge">{{ session.user[0].upper() }}</div>
-      <span class="user-name">{{ session.user.split()[0] }}</span>
+      <div class="user-badge">{{ session.get('user')[0].upper() }}</div>
+      <span class="user-name">{{ session.get('user').split()[0] }}</span>
       <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
     </div>
 
@@ -45,10 +46,11 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="{{ url_for('dashboard') }}"   class="mob-link">🏠 Dashboard</a>
     <a href="{{ url_for('notes') }}"       class="mob-link">📚 Notes</a>
+    <a href="{{ url_for('assignments') }}" class="mob-link">📝 Assignments</a>
     <a href="{{ url_for('quiz') }}"        class="mob-link">🧠 Quiz</a>
     <a href="{{ url_for('updates') }}"     class="mob-link">📢 Updates</a>
     <a href="{{ url_for('leaderboard') }}" class="mob-link">🏆 Leaderboard</a>
-    {% if session.is_admin %}
+    {% if session.get('is_admin') %}
     <a href="{{ url_for('admin') }}"       class="mob-link">⚙️ Admin</a>
     {% endif %}
     <a href="{{ url_for('logout') }}"      class="mob-link mob-logout">🚪 Logout</a>
@@ -71,12 +73,12 @@
 {% endwith %}
 
 <!-- ════════ PAGE CONTENT ════════ -->
-<main class="main-wrap {% if not session.user %}auth-wrap{% endif %}">
+<main class="main-wrap {% if not session.get('user') %}auth-wrap{% endif %}">
   {% block content %}{% endblock %}
 </main>
 
 <!-- ════════ FOOTER ════════ -->
-{% if session.user %}
+{% if session.get('user') %}
 <footer class="footer">
   <p>
     © 2025 <strong>StudyHub</strong> &nbsp;·&nbsp; Built for students, by students

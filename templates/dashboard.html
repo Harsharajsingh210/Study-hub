@@ -6,7 +6,7 @@
 <section class="dash-hero">
   <div class="hero-text">
     <p class="hero-eyebrow">Welcome back 👋</p>
-    <h1>Hello, <span class="accent">{{ session.user.split()[0] }}</span></h1>
+    <h1>Hello, <span class="accent">{{ session.get('user').split()[0] }}</span></h1>
     <p class="hero-sub">What would you like to study today?</p>
   </div>
   <div class="hero-art">
@@ -26,6 +26,10 @@
   <div class="stat-card">
     <span class="stat-num">{{ quiz_count }}</span>
     <span class="stat-lbl">Quiz Questions</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num">{{ assignments_count }}</span>
+    <span class="stat-lbl">Assignments</span>
   </div>
   <div class="stat-card">
     <span class="stat-num">6</span>
@@ -56,6 +60,15 @@
       <span class="ncard-arrow">→</span>
     </a>
 
+    <a href="{{ url_for('assignments') }}" class="ncard ncard-orange">
+      <span class="ncard-icon">📝</span>
+      <div class="ncard-body">
+        <h3>Assignments</h3>
+        <p>View subject-wise assignments and due dates</p>
+      </div>
+      <span class="ncard-arrow">→</span>
+    </a>
+
     <a href="{{ url_for('updates') }}" class="ncard ncard-pink">
       <span class="ncard-icon">📢</span>
       <div class="ncard-body">
@@ -74,7 +87,7 @@
       <span class="ncard-arrow">→</span>
     </a>
 
-    {% if session.is_admin %}
+    {% if session.get('is_admin') %}
     <a href="{{ url_for('admin') }}" class="ncard ncard-orange">
       <span class="ncard-icon">⚙️</span>
       <div class="ncard-body">

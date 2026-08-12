@@ -30,5 +30,13 @@
     "password": "055efb1c7396a8c67c70815e4caa8f9d6a3a698e0471c6401e2875ca15319650",
     "is_admin": false,
     "score": 0
+  },
+  {
+    "id": "98cb8696-53b7-46ae-b696-578941925989",
+    "name": "akshay",
+    "email": "akkuprajapati@7984",
+    "password": "3119d97a23ce90cc8daa74589cdfeb05cd73e2a806e9d3f80adf8169713f4437",
+    "is_admin": false,
+    "score": 0
   }
 ]
