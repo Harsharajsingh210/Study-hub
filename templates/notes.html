@@ -46,12 +46,12 @@
       <strong>{{ file.label }}</strong>
       <button type="button"
               class="btn-primary note-preview-btn"
-              data-pdf-url="{{ url_for('view_note_file', note_id=n.id, file_index=loop.index0) }}"
+              data-pdf-url="{{ url_for('note_file', filename=file.filename) }}"
               data-note-title="{{ n.title }} — {{ file.label }}">
         📖 Preview PDF
       </button>
-      <a href="{{ url_for('download_note_file', note_id=n.id, file_index=loop.index0) }}"
-         class="btn-dl">⬇ Download PDF</a>
+      <a href="{{ url_for('note_file', filename=file.filename) }}" class="btn-dl"
+         download>⬇ Download PDF</a>
     </div>
     {% endfor %}
   {% elif n.filename %}
