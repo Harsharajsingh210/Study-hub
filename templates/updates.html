@@ -12,14 +12,14 @@
     {% for u in updates %}
     <div class="ucard">
       <div class="ucard-top">
-        <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+        <span class="utag" data-tag="{{ u.tag_color }}">
           {{ u.tag }}
         </span>
         <span class="ucard-date">📅 {{ u.date }}</span>
       </div>
       <h3 class="ucard-title">{{ u.title }}</h3>
       <p class="ucard-body">{{ u.content }}</p>
-      <div class="ucard-bar" style="background:{{ u.tag_color }}"></div>
+      <div class="ucard-bar" data-tag="{{ u.tag_color }}"></div>
     </div>
     {% endfor %}
   {% else %}
@@ -44,17 +44,37 @@
     {% for u in defaults %}
     <div class="ucard">
       <div class="ucard-top">
-        <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+        <span class="utag" data-tag="{{ u.tag_color }}">
           {{ u.tag }}
         </span>
         <span class="ucard-date">📅 {{ u.date }}</span>
       </div>
       <h3 class="ucard-title">{{ u.title }}</h3>
       <p class="ucard-body">{{ u.content }}</p>
-      <div class="ucard-bar" style="background:{{ u.tag_color }}"></div>
+      <div class="ucard-bar" data-tag="{{ u.tag_color }}"></div>
     </div>
     {% endfor %}
   {% endif %}
 </div>
+
+<script>
+  (function(){
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.utag[data-tag]').forEach(function(el){
+        var tag = el.getAttribute('data-tag');
+        if(!tag) return;
+        try{
+          el.style.background = tag + '18';
+          el.style.color = tag;
+          el.style.border = '1px solid ' + tag + '35';
+        }catch(e){/* ignore */}
+      });
+      document.querySelectorAll('.ucard-bar[data-tag]').forEach(function(el){
+        var tag = el.getAttribute('data-tag'); if(!tag) return;
+        try{ el.style.background = tag; }catch(e){}
+      });
+    });
+  })();
+</script>
 
 {% endblock %}

@@ -112,7 +112,7 @@
   <div class="update-strip">
     {% for u in updates %}
     <div class="ustrip-item">
-      <span class="utag" style="background:{{ u.tag_color }}18;color:{{ u.tag_color }};border:1px solid {{ u.tag_color }}35">
+      <span class="utag" data-tag="{{ u.tag_color }}">
         {{ u.tag }}
       </span>
       <div class="ustrip-body">
@@ -126,7 +126,7 @@
   {% else %}
   <div class="update-strip">
     <div class="ustrip-item">
-      <span class="utag" style="background:#f7258518;color:#f72585;border:1px solid #f7258535">Exam</span>
+      <span class="utag" data-tag="#f72585">Exam</span>
       <div class="ustrip-body">
         <h4>🎉 Mid-Term Exams Schedule Released</h4>
         <p>Mid-term examinations will be held from November 18–25.</p>
@@ -134,7 +134,7 @@
       <span class="ustrip-date">2024-11-01</span>
     </div>
     <div class="ustrip-item">
-      <span class="utag" style="background:#4361ee18;color:#4361ee;border:1px solid #4361ee35">Resources</span>
+      <span class="utag" data-tag="#4361ee">Resources</span>
       <div class="ustrip-body">
         <h4>📚 New Study Materials Added</h4>
         <p>Updated notes for Mathematics and Physics have been uploaded.</p>
@@ -144,5 +144,21 @@
   </div>
   {% endif %}
 </section>
+
+<script>
+  (function(){
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.utag[data-tag]').forEach(function(el){
+        var tag = el.getAttribute('data-tag');
+        if(!tag) return;
+        try{
+          el.style.background = tag + '18';
+          el.style.color = tag;
+          el.style.border = '1px solid ' + tag + '35';
+        }catch(e){/* ignore */}
+      });
+    });
+  })();
+</script>
 
 {% endblock %}
