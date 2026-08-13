@@ -15,4 +15,14 @@
     "due_date": "2026-08-23",
     "color": "#fb8500"
   }
+  ,
+  {
+    "id": "3",
+    "subject": "CHASM",
+    "title": "CHASM Assignments 1 & 2",
+    "description": "Complete and submit CHASM - Assignment 1 and 2 (PDF attached).",
+    "due_date": "2026-09-01",
+    "color": "#06d6a0",
+    "filename": "notes/CHASM- Assignment -1 and 2.pdf"
+  }
 ]

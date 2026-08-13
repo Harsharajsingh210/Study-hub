@@ -14,6 +14,7 @@
       {% for subject in subjects %}
       <option value="{{ subject }}" {% if subject == subject_filter %}selected{% endif %}>{{ subject }}</option>
       {% endfor %}
+      <option value="CHASM" {% if 'CHASM' == subject_filter %}selected{% endif %}>CHASM</option>
     </select>
     <button type="submit" class="btn-primary">Filter</button>
     {% if subject_filter %}<a href="{{ url_for('assignments') }}" class="btn-ghost">Clear</a>{% endif %}
@@ -30,6 +31,9 @@
     </div>
     <h2>{{ assignment.title }}</h2>
     <p>{{ assignment.description }}</p>
+    {% if assignment.filename %}
+    <p><a class="btn-ghost" href="{{ url_for('static', filename=assignment.filename) }}" target="_blank">Download PDF</a></p>
+    {% endif %}
   </article>
   {% endfor %}
 </div>
