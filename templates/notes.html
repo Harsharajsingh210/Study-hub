@@ -40,10 +40,16 @@
     <h3 class="note-title">{{ n.title }}</h3>
     <p class="note-desc">{{ n.description }}</p>
     <div class="note-foot">
-  {% if n.files %}
+  {% if n.subject == 'CHASM' %}
+    <a href="/notes/subject/{{ n.subject|urlencode }}" class="btn-primary">View Chapters</a>
+  {% elif n.files %}
     {% for file in n.files %}
     <div class="note-file-actions">
-      <strong>{{ file.label }}</strong>
+      <strong class="note-file-label"
+              role="button"
+              tabindex="0"
+              data-pdf-url="{{ url_for('note_file', filename=file.filename) }}"
+              data-note-title="{{ n.title }} — {{ file.label }}">{{ file.label }}</strong>
       <button type="button"
               class="btn-primary note-preview-btn"
               data-pdf-url="{{ url_for('note_file', filename=file.filename) }}"
@@ -117,6 +123,23 @@
       previewTitle.textContent = button.dataset.noteTitle;
       previewModal.hidden = false;
       document.body.classList.add('modal-open');
+    });
+  });
+
+  // Make the file/section label clickable to open the same PDF preview
+  document.querySelectorAll('.note-file-label').forEach((el) => {
+    const openPreview = () => {
+      previewFrame.src = el.dataset.pdfUrl;
+      previewTitle.textContent = el.dataset.noteTitle || previewTitle.textContent;
+      previewModal.hidden = false;
+      document.body.classList.add('modal-open');
+    };
+    el.addEventListener('click', openPreview);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openPreview();
+      }
     });
   });
 

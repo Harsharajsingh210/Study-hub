@@ -339,6 +339,35 @@ def notes():
                            subject_filter=subject_filter)
 
 
+@app.route("/notes/subject/<subject_name>")
+@login_required
+def subject_page(subject_name):
+    all_notes = load_json("notes.json")
+    # Match subject case-insensitively
+    matched = [n for n in all_notes if n.get("subject", "").lower() == subject_name.lower()]
+    if not matched:
+        flash(f"No notes found for subject: {subject_name}", "warning")
+        return redirect(url_for("notes"))
+    # Pass the matched entries (may contain multiple note groups/files)
+    return render_template("subject.html", subject=subject_name, notes=matched)
+
+
+# Fallback alias for CHASM subject to avoid 404 if dynamic route has issues
+@app.route("/notes/subject/CHASM")
+@login_required
+def subject_chasm():
+    return subject_page('CHASM')
+
+
+# Debug helper: list all registered routes (safe for local testing)
+@app.route('/_routes')
+def _routes():
+    lines = []
+    for r in sorted(app.url_map.iter_rules(), key=lambda x: x.rule):
+        lines.append(f"{r.rule} -> {r.endpoint}")
+    return '<pre>' + '\n'.join(lines) + '</pre>'
+
+
 @app.route("/notes/download/<note_id>")
 @login_required
 def download_note(note_id):

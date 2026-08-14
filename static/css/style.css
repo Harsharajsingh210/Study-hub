@@ -257,6 +257,8 @@ textarea{resize:vertical}
 .note-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:18px}
 .note-foot{padding-top:14px;border-top:1px solid var(--border)}
 .note-file-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.note-file-actions+.note-file-actions{margin-top:12px}.note-file-actions strong{width:100%;font-size:13px;color:var(--text)}
+.note-file-label{cursor:pointer}
+.note-file-label:focus{outline:2px solid rgba(67,97,238,.18);border-radius:6px}
 .btn-dl{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);background:rgba(67,97,238,.12);color:#6b8fff;border:1px solid rgba(67,97,238,.25);font-size:13px;font-weight:600;transition:all .2s}
 .btn-dl:hover{background:rgba(67,97,238,.22);transform:translateY(-1px)}
 .btn-soon{display:inline-block;padding:8px 16px;background:var(--bg3);color:var(--text3);border-radius:var(--rs);font-size:13px;border:1px solid var(--border)}

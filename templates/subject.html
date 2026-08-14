@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ subject }} – Notes – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>📚 {{ subject }}</h1>
+  <p>Chapters and study materials for {{ subject }}. Click a chapter to preview or download.</p>
+  <p><a href="{{ url_for('notes') }}" class="btn-ghost">← Back to Notes</a></p>
+</div>
+
+<div class="section">
+  <div class="notes-grid">
+    {% for n in notes %}
+    <div class="note-card" data-note-color="{{ n.color }}">
+      <div class="note-top">
+        <span class="note-ico">{{ n.icon }}</span>
+        <span class="note-subj">{{ n.subject }}</span>
+      </div>
+      <h3 class="note-title">{{ n.title }}</h3>
+      <p class="note-desc">{{ n.description }}</p>
+      <div class="note-foot">
+        {% if n.files %}
+          {% for file in n.files %}
+          <div class="note-file-actions">
+            <strong>{{ file.label }}</strong>
+            <button type="button" class="btn-primary note-preview-btn"
+                    data-pdf-url="{{ url_for('note_file', filename=file.filename) }}"
+                    data-note-title="{{ n.title }} — {{ file.label }}">
+              📖 Preview PDF
+            </button>
+            <a href="{{ url_for('note_file', filename=file.filename) }}" class="btn-dl" download>⬇ Download PDF</a>
+          </div>
+          {% endfor %}
+        {% elif n.filename %}
+          <button type="button" class="btn-primary note-preview-btn"
+                  data-pdf-url="{{ url_for('note_file', filename=n.filename) }}"
+                  data-note-title="{{ n.title }}">
+            📖 Preview PDF
+          </button>
+          <a href="{{ url_for('download_note', note_id=n.id) }}" class="btn-dl">⬇ Download PDF</a>
+        {% else %}
+          <span class="btn-soon">📖 Coming Soon</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Reuse the same modal as notes.html -->
+<div class="pdf-modal" id="pdfPreview" role="dialog" aria-modal="true"
+     aria-labelledby="pdfPreviewTitle" hidden>
+  <div class="pdf-modal-backdrop" data-close-preview></div>
+  <section class="pdf-modal-panel">
+    <header class="pdf-modal-header">
+      <h2 id="pdfPreviewTitle">PDF Preview</h2>
+      <button type="button" class="pdf-modal-close" data-close-preview
+              aria-label="Close PDF preview">&times;</button>
+    </header>
+    <iframe id="pdfPreviewFrame" class="pdf-preview-frame" title="PDF preview"></iframe>
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('.note-card[data-note-color]').forEach((card) => {
+    const color = card.dataset.noteColor;
+    const subject = card.querySelector('.note-subj');
+
+    card.style.setProperty('--ac', color);
+    if (subject) {
+      subject.style.backgroundColor = `${color}18`;
+      subject.style.color = color;
+    }
+  });
+
+  const previewModal = document.getElementById('pdfPreview');
+  const previewFrame = document.getElementById('pdfPreviewFrame');
+  const previewTitle = document.getElementById('pdfPreviewTitle');
+
+  document.querySelectorAll('.note-preview-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      previewFrame.src = button.dataset.pdfUrl;
+      previewTitle.textContent = button.dataset.noteTitle;
+      previewModal.hidden = false;
+      document.body.classList.add('modal-open');
+    });
+  });
+
+  const closePreview = () => {
+    previewModal.hidden = true;
+    previewFrame.src = '';
+    document.body.classList.remove('modal-open');
+  };
+
+  previewModal.querySelectorAll('[data-close-preview]').forEach((element) => {
+    element.addEventListener('click', closePreview);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !previewModal.hidden) closePreview();
+  });
+</script>
+
+{% endblock %}
