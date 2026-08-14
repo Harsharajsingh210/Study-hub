@@ -30,6 +30,24 @@
             </button>
             <a href="{{ url_for('note_file', filename=file.filename) }}" class="btn-dl" download>⬇ Download PDF</a>
           </div>
+          <div class="favorite-row note-favorite-row">
+            {% set favorite_key = 'file|' ~ n.id ~ '|' ~ file.filename %}
+            <form method="POST" action="{{ url_for('toggle_favorite') }}" class="favorite-form">
+              <input type="hidden" name="note_id" value="{{ n.id }}">
+              <input type="hidden" name="subject" value="{{ n.subject }}">
+              <input type="hidden" name="chapter_name" value="{{ n.title }}">
+              <input type="hidden" name="note_name" value="{{ file.label }}">
+              <input type="hidden" name="filename" value="{{ file.filename }}">
+              <input type="hidden" name="file_label" value="{{ file.label }}">
+              <input type="hidden" name="favorite_key" value="{{ favorite_key }}">
+              <input type="hidden" name="preview_url" value="{{ url_for('note_file', filename=file.filename) }}">
+              <input type="hidden" name="download_url" value="{{ url_for('note_file', filename=file.filename) }}">
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button type="submit" class="favorite-toggle-btn {% if favorite_key in favorite_keys %}active{% endif %}">
+                {% if favorite_key in favorite_keys %}⭐ Favorited{% else %}☆ Favorite{% endif %}
+              </button>
+            </form>
+          </div>
           {% endfor %}
         {% elif n.filename %}
           <button type="button" class="btn-primary note-preview-btn"
@@ -38,6 +56,23 @@
             📖 Preview PDF
           </button>
           <a href="{{ url_for('download_note', note_id=n.id) }}" class="btn-dl">⬇ Download PDF</a>
+          <div class="favorite-row note-favorite-row">
+            {% set favorite_key = 'note|' ~ n.id %}
+            <form method="POST" action="{{ url_for('toggle_favorite') }}" class="favorite-form">
+              <input type="hidden" name="note_id" value="{{ n.id }}">
+              <input type="hidden" name="subject" value="{{ n.subject }}">
+              <input type="hidden" name="chapter_name" value="{{ n.title }}">
+              <input type="hidden" name="note_name" value="{{ n.title }}">
+              <input type="hidden" name="filename" value="{{ n.filename }}">
+              <input type="hidden" name="favorite_key" value="{{ favorite_key }}">
+              <input type="hidden" name="preview_url" value="{{ url_for('view_note', note_id=n.id) }}">
+              <input type="hidden" name="download_url" value="{{ url_for('download_note', note_id=n.id) }}">
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button type="submit" class="favorite-toggle-btn {% if favorite_key in favorite_keys %}active{% endif %}">
+                {% if favorite_key in favorite_keys %}⭐ Favorited{% else %}☆ Favorite{% endif %}
+              </button>
+            </form>
+          </div>
         {% else %}
           <span class="btn-soon">📖 Coming Soon</span>
         {% endif %}

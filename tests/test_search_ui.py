@@ -26,6 +26,18 @@ class SmartSearchUiTests(unittest.TestCase):
         html = response.get_data(as_text=True)
         self.assertIn("CHASM", html)
 
+    def test_favorites_page_requires_login(self):
+        self.client.get("/logout", follow_redirects=False)
+        response = self.client.get("/favorites")
+        self.assertEqual(response.status_code, 302)
+
+    def test_favorites_page_renders_for_logged_in_user(self):
+        response = self.client.get("/favorites")
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        self.assertIn("My Favorites", html)
+        self.assertIn("You haven't added any favorites yet.", html)
+
 
 if __name__ == "__main__":
     unittest.main()

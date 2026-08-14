@@ -83,6 +83,47 @@ def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def favorite_key_for(note_id: str, filename: str = "", note_name: str = "", chapter_name: str = "") -> str:
+    if filename:
+        return f"{str(note_id)}|{str(filename)}"
+    if note_name:
+        return f"{str(note_id)}|{str(note_name)}"
+    return f"{str(note_id)}|{str(chapter_name or 'note')}"
+
+
+def current_user_record():
+    user_id = session.get("user_id")
+    if not user_id:
+        return None
+    for user in load_json("users.json"):
+        if str(user.get("id")) == str(user_id):
+            user.setdefault("favorites", [])
+            return user
+    return None
+
+
+def favorite_keys_for_user():
+    user = current_user_record()
+    favorites = user.get("favorites", []) if user else []
+    return {str(item.get("key", "")) for item in favorites if isinstance(item, dict)}
+
+
+def save_current_user_favorites(favorites):
+    user_id = session.get("user_id")
+    if not user_id:
+        return False
+    users = load_json("users.json")
+    changed = False
+    for user in users:
+        if str(user.get("id")) == str(user_id):
+            user["favorites"] = favorites
+            changed = True
+            break
+    if changed:
+        return save_json("users.json", users)
+    return False
+
+
 def note_matches_search(note: dict, query: str) -> bool:
     """Case-insensitive match against subject, title, description and file metadata."""
     if not query:
@@ -357,7 +398,8 @@ def notes():
                            notes=all_notes,
                            subjects=subjects,
                            search=search,
-                           subject_filter=subject_filter)
+                           subject_filter=subject_filter,
+                           favorite_keys=favorite_keys_for_user())
 
 
 @app.route("/notes/subject/<subject_name>")
@@ -370,7 +412,61 @@ def subject_page(subject_name):
         flash(f"No notes found for subject: {subject_name}", "warning")
         return redirect(url_for("notes"))
     # Pass the matched entries (may contain multiple note groups/files)
-    return render_template("subject.html", subject=subject_name, notes=matched)
+    return render_template("subject.html", subject=subject_name, notes=matched,
+                           favorite_keys=favorite_keys_for_user())
+
+
+@app.route("/favorites", methods=["GET"])
+@login_required
+def favorites_page():
+    user = current_user_record()
+    favorites = user.get("favorites", []) if user else []
+    return render_template("favorites.html", favorites=favorites)
+
+
+@app.route("/favorites/toggle", methods=["POST"])
+@login_required
+def toggle_favorite():
+    user = current_user_record()
+    if not user:
+        flash("Please log in to manage favorites.", "warning")
+        return redirect(url_for("login"))
+
+    favorite_key = (request.form.get("favorite_key") or request.form.get("item_key") or "").strip()
+    if not favorite_key:
+        note_id = request.form.get("note_id", "")
+        subject = request.form.get("subject", "")
+        chapter_name = request.form.get("chapter_name", "")
+        note_name = request.form.get("note_name", "")
+        filename = request.form.get("filename", "")
+        favorite_key = favorite_key_for(note_id, filename=filename, note_name=note_name, chapter_name=chapter_name)
+
+    favorites = user.get("favorites", [])
+    existing_index = next((idx for idx, item in enumerate(favorites) if item.get("key") == favorite_key), None)
+
+    if existing_index is not None:
+        del favorites[existing_index]
+        save_current_user_favorites(favorites)
+        flash("Removed from favorites.", "info")
+    else:
+        favorite_item = {
+            "key": favorite_key,
+            "note_id": request.form.get("note_id", ""),
+            "subject": request.form.get("subject", ""),
+            "chapter_name": request.form.get("chapter_name", ""),
+            "note_name": request.form.get("note_name", ""),
+            "filename": request.form.get("filename", ""),
+            "file_label": request.form.get("file_label", ""),
+            "preview_url": request.form.get("preview_url", ""),
+            "download_url": request.form.get("download_url", ""),
+            "view_url": request.form.get("view_url", "")
+        }
+        favorites.append(favorite_item)
+        save_current_user_favorites(favorites)
+        flash("Added to favorites.", "success")
+
+    next_url = request.form.get("next") or request.referrer or url_for("notes")
+    return redirect(next_url)
 
 
 # Fallback alias for CHASM subject to avoid 404 if dynamic route has issues

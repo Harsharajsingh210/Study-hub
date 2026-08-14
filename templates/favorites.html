@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}My Favorites – StudyHub{% endblock %}
+{% block content %}
+
+<div class="page-hdr">
+  <h1>⭐ My Favorites</h1>
+  <p>Saved chapters, notes and PDF resources for your quick access.</p>
+</div>
+
+{% if favorites %}
+<div class="favorite-page-grid">
+  {% for item in favorites %}
+  <div class="favorite-card">
+    <div class="favorite-card-top">
+      <span class="favorite-tag">{{ item.subject or 'Study Material' }}</span>
+      <span class="favorite-tag">Saved</span>
+    </div>
+
+    <div>
+      <h3>{{ item.chapter_name or item.note_name or 'Study Material' }}</h3>
+      <p><strong>Subject:</strong> {{ item.subject or 'N/A' }}</p>
+      <p><strong>Chapter:</strong> {{ item.chapter_name or 'N/A' }}</p>
+      <p><strong>Note / PDF:</strong> {{ item.note_name or item.file_label or item.filename or 'N/A' }}</p>
+    </div>
+
+    <div class="favorite-actions">
+      <a href="{{ item.preview_url or item.view_url or url_for('notes') }}" class="btn-primary">View PDF / Preview</a>
+      {% if item.download_url %}
+      <a href="{{ item.download_url }}" class="btn-dl" download>Download</a>
+      {% endif %}
+      <form method="POST" action="{{ url_for('toggle_favorite') }}">
+        <input type="hidden" name="favorite_key" value="{{ item.key }}">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="favorite-remove">Remove from Favorites</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="favorite-empty">
+  <strong>You haven't added any favorites yet.</strong>
+  <p>Browse the notes section and save important chapters or PDFs for quick access.</p>
+  <a href="{{ url_for('notes') }}" class="btn-primary">Browse Notes</a>
+</div>
+{% endif %}
+
+{% endblock %}

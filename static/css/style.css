@@ -276,10 +276,30 @@ textarea{resize:vertical}
 .note-file-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.note-file-actions+.note-file-actions{margin-top:12px}.note-file-actions strong{width:100%;font-size:13px;color:var(--text)}
 .note-file-label{cursor:pointer}
 .note-file-label:focus{outline:2px solid rgba(67,97,238,.18);border-radius:6px}
+.favorite-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
+.favorite-form{width:100%}
+.favorite-toggle-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:9px 12px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);color:var(--text);font-size:13px;font-weight:600;transition:all .2s}
+.favorite-toggle-btn:hover{background:rgba(255,255,255,.06)}
+.favorite-toggle-btn.active{background:rgba(255,209,102,.08);border-color:rgba(255,209,102,.35);color:var(--yellow)}
+.note-favorite-row{margin-top:10px}
 .btn-dl{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);background:rgba(67,97,238,.12);color:#6b8fff;border:1px solid rgba(67,97,238,.25);font-size:13px;font-weight:600;transition:all .2s}
 .btn-dl:hover{background:rgba(67,97,238,.22);transform:translateY(-1px)}
 .btn-soon{display:inline-block;padding:8px 16px;background:var(--bg3);color:var(--text3);border-radius:var(--rs);font-size:13px;border:1px solid var(--border)}
+.favorite-page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.favorite-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}
+.favorite-card-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.favorite-tag{padding:4px 10px;border-radius:99px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(67,97,238,.12);color:var(--blue)}
+.favorite-card h3{font-size:15px;font-weight:700}
+.favorite-card p{font-size:12px;color:var(--text2)}
+.favorite-actions{display:flex;flex-direction:column;gap:8px}
+.favorite-actions .btn-primary,.favorite-actions .btn-dl{width:100%}
+.favorite-remove{padding:8px 12px;border-radius:var(--rs);background:rgba(247,37,133,.08);border:1px solid rgba(247,37,133,.2);color:var(--pink);font-size:13px;font-weight:600;width:100%}
+.favorite-remove:hover{background:rgba(247,37,133,.18)}
+.favorite-empty{padding:40px 20px;border:1px dashed var(--border2);border-radius:var(--r);background:rgba(255,255,255,.01);text-align:center}
+.favorite-empty strong{display:block;font-size:18px;margin-bottom:8px;color:var(--text)}
+.favorite-empty p{font-size:14px;color:var(--text2)}
 .modal-open{overflow:hidden}
+l-open{overflow:hidden}
 .pdf-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px}
 .pdf-modal[hidden]{display:none}
 .pdf-modal-backdrop{position:absolute;inset:0;background:rgba(8,12,26,.72);backdrop-filter:blur(4px)}
