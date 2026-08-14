@@ -17,6 +17,16 @@
   </div>
 </section>
 
+<div class="smart-search-shell dashboard-search-shell">
+  <form method="GET" action="{{ url_for('notes') }}" class="filter-form smart-search-form">
+    <div class="search-wrap dashboard-search-wrap">
+      <span class="si">🔍</span>
+      <input type="text" name="search" placeholder="Search subject, chapter or PDF name..." class="search-inp smart-search-input" />
+    </div>
+    <button type="submit" class="btn-primary">Search</button>
+  </form>
+</div>
+
 <!-- Stats -->
 <div class="stats-row">
   <div class="stat-card">

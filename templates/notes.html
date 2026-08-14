@@ -8,12 +8,15 @@
 </div>
 
 <!-- Search & Filter -->
-<div class="filter-bar">
-  <form method="GET" action="{{ url_for('notes') }}" class="filter-form">
+<div class="filter-bar smart-search-shell">
+  <div class="smart-search-header">
+    <strong>Smart Search</strong>
+  </div>
+  <form method="GET" action="{{ url_for('notes') }}" class="filter-form smart-search-form">
     <div class="search-wrap">
       <span class="si">🔍</span>
-      <input type="text" name="search" value="{{ search }}"
-             placeholder="Search notes…" class="search-inp"/>
+      <input id="smartSearchInput" type="text" name="search" value="{{ search }}"
+             placeholder="Search subject, chapter or note name…" class="search-inp smart-search-input"/>
     </div>
     <select name="subject" class="filter-sel">
       <option value="">All Subjects</option>
@@ -26,13 +29,22 @@
     <a href="{{ url_for('notes') }}" class="btn-ghost">Clear</a>
     {% endif %}
   </form>
+  <div id="smartSearchResults" class="smart-search-results" aria-live="polite"></div>
 </div>
 
 <!-- Notes Grid -->
 {% if notes %}
-<div class="notes-grid">
+<div class="notes-grid" id="notesGrid">
   {% for n in notes %}
-  <div class="note-card" data-note-color="{{ n.color }}">
+  {% set smart_label = (n.files[0].label if n.files and n.files|length else n.title) %}
+  {% set smart_pdf = (url_for('note_file', filename=n.files[0].filename) if n.files and n.files|length else (url_for('view_note', note_id=n.id) if n.filename else '/notes/subject/' ~ n.subject|urlencode)) %}
+  <div class="note-card"
+       data-note-color="{{ n.color }}"
+       data-subject="{{ n.subject }}"
+       data-chapter="{{ n.title }}"
+       data-pdf-name="{{ smart_label }}"
+       data-preview-url="{{ smart_pdf }}"
+       data-search-text="{{ n.subject }} {{ n.title }} {{ n.description }} {% if n.files %}{% for file in n.files %}{{ file.label }} {{ file.filename }} {% endfor %}{% endif %} {{ n.filename or '' }}">
     <div class="note-top">
       <span class="note-ico">{{ n.icon }}</span>
       <span class="note-subj">{{ n.subject }}</span>
@@ -116,15 +128,111 @@
   const previewModal = document.getElementById('pdfPreview');
   const previewFrame = document.getElementById('pdfPreviewFrame');
   const previewTitle = document.getElementById('pdfPreviewTitle');
+  const searchInput = document.getElementById('smartSearchInput');
+  const searchResults = document.getElementById('smartSearchResults');
+  const noteCards = Array.from(document.querySelectorAll('.note-card'));
+
+  function openPreview(url, title) {
+    previewFrame.src = url;
+    previewTitle.textContent = title || 'PDF Preview';
+    previewModal.hidden = false;
+    document.body.classList.add('modal-open');
+  }
 
   document.querySelectorAll('.note-preview-btn').forEach((button) => {
     button.addEventListener('click', () => {
-      previewFrame.src = button.dataset.pdfUrl;
-      previewTitle.textContent = button.dataset.noteTitle;
-      previewModal.hidden = false;
-      document.body.classList.add('modal-open');
+      openPreview(button.dataset.pdfUrl, button.dataset.noteTitle);
     });
   });
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char]));
+  }
+
+  function renderSmartSearchResults(query) {
+    if (!searchResults) return;
+
+    const normalizedQuery = query.trim().toLowerCase();
+    const visibleCards = noteCards.filter((card) => {
+      const text = (card.dataset.searchText || '').toLowerCase();
+      return !normalizedQuery || text.includes(normalizedQuery);
+    });
+
+    if (!normalizedQuery) {
+      searchResults.classList.remove('visible');
+      searchResults.innerHTML = '';
+      noteCards.forEach((card) => card.style.display = '');
+      return;
+    }
+
+    noteCards.forEach((card) => {
+      card.style.display = visibleCards.includes(card) ? '' : 'none';
+    });
+
+    if (!visibleCards.length) {
+      searchResults.classList.add('visible');
+      searchResults.innerHTML = `
+        <div class="smart-search-empty">
+          <strong>No notes found</strong>
+          <p>Try another subject, chapter, or note name.</p>
+        </div>
+      `;
+      return;
+    }
+
+    searchResults.classList.add('visible');
+    searchResults.innerHTML = visibleCards.map((card) => {
+      const subject = escapeHtml(card.dataset.subject || 'Study Material');
+      const chapter = escapeHtml(card.dataset.chapter || card.querySelector('.note-title')?.textContent || 'Study Notes');
+      const noteName = escapeHtml(card.dataset.pdfName || card.querySelector('.note-title')?.textContent || 'Study Material');
+      const previewUrl = card.dataset.previewUrl || '#';
+      const previewTitle = `${subject} — ${chapter}`;
+      return `
+        <div class="smart-result-item">
+          <div class="smart-result-meta">
+            <span class="smart-chip">Subject</span>
+            <strong>${subject}</strong>
+          </div>
+          <div class="smart-result-meta">
+            <span class="smart-chip">Chapter</span>
+            <p>${chapter}</p>
+          </div>
+          <div class="smart-result-meta">
+            <span class="smart-chip">Note / PDF</span>
+            <p>${noteName}</p>
+          </div>
+          <button type="button" class="btn-primary smart-result-preview" data-preview-url="${previewUrl}" data-preview-title="${escapeHtml(previewTitle)}">View / Preview</button>
+        </div>
+      `;
+    }).join('');
+
+    searchResults.querySelectorAll('.smart-result-preview').forEach((button) => {
+      button.addEventListener('click', () => {
+        const url = button.dataset.previewUrl;
+        const title = button.dataset.previewTitle || 'Study Hub Preview';
+        if (!url || url === '#') return;
+        if (url.includes('/notes/subject/')) {
+          window.location.href = url;
+          return;
+        }
+        openPreview(url, title);
+      });
+    });
+  }
+
+  if (searchInput) {
+    const initialQuery = searchInput.value.trim();
+    renderSmartSearchResults(initialQuery);
+    searchInput.addEventListener('input', (event) => {
+      renderSmartSearchResults(event.target.value);
+    });
+  }
 
   // Make the file/section label clickable to open the same PDF preview
   document.querySelectorAll('.note-file-label').forEach((el) => {

@@ -82,6 +82,30 @@ def save_json(filename: str, data) -> bool:
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+def note_matches_search(note: dict, query: str) -> bool:
+    """Case-insensitive match against subject, title, description and file metadata."""
+    if not query:
+        return True
+    query = query.lower().strip()
+    if not query:
+        return True
+
+    haystacks = [
+        note.get("subject", ""),
+        note.get("title", ""),
+        note.get("description", ""),
+        note.get("filename", ""),
+    ]
+    for file_data in note.get("files", []) or []:
+        haystacks.extend([
+            file_data.get("label", ""),
+            file_data.get("filename", ""),
+        ])
+
+    return any(query in str(value).lower() for value in haystacks if value is not None)
+
+
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -320,14 +344,11 @@ def dashboard():
 @login_required
 def notes():
     all_notes      = load_json("notes.json")
-    search         = request.args.get("search", "").strip().lower()
+    search         = request.args.get("search", "").strip()
     subject_filter = request.args.get("subject", "").strip()
 
     if search:
-        all_notes = [n for n in all_notes
-                     if search in n["title"].lower()
-                     or search in n["subject"].lower()
-                     or search in n.get("description", "").lower()]
+        all_notes = [n for n in all_notes if note_matches_search(n, search)]
     if subject_filter:
         all_notes = [n for n in all_notes if n["subject"] == subject_filter]
 
