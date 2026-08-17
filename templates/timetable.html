@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Timetable – StudyHub{% endblock %}
+{% block content %}
+<section class="page-hdr">
+  <h1>📅 College Timetable</h1>
+  <p>Department: Computer Engineering &nbsp;·&nbsp; Semester: 5 &nbsp;·&nbsp; Term: 261</p>
+</section>
+
+<div class="timetable-wrap">
+  <div class="timetable-header row-between">
+    <div class="header-meta">
+      <span class="meta-label">Institution</span>
+      <strong>{{ timetable_data.institution }}</strong>
+    </div>
+    <div class="class-switcher">
+      {% for class_name in class_names %}
+      <a href="{{ url_for('timetable', class_name=class_name) }}" class="class-btn {% if selected_class == class_name %}active{% endif %}">
+        Class {{ class_name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="timetable-status-bar">
+    <div class="status-pill">
+      <span>Today</span>
+      <strong>{{ today }}</strong>
+    </div>
+    <div class="status-pill">
+      <span>Semester</span>
+      <strong>5</strong>
+    </div>
+    <div class="status-pill">
+      <span>Term</span>
+      <strong>261</strong>
+    </div>
+  </div>
+
+  <div class="timetable-panels">
+    <div class="timetable-panel current-panel">
+      <div class="panel-title">Current Class</div>
+      {% if current_class %}
+      <div class="current-class-box">
+        <div class="time-block">{{ current_class.time }}</div>
+        <div class="subject-title">📚 {{ current_class.subject }}</div>
+        <div class="faculty-line">👨‍🏫 {{ current_class.faculty }}</div>
+        <div class="room-line">🏫 {{ current_class.room }}</div>
+      </div>
+      {% else %}
+      <div class="current-class-box empty-box">
+        <strong>No ongoing class</strong>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="timetable-panel next-panel">
+      <div class="panel-title">Next Class</div>
+      {% if next_class %}
+      <div class="current-class-box">
+        <div class="time-block">{{ next_class.time }}</div>
+        <div class="subject-title">📚 {{ next_class.subject }}</div>
+        <div class="faculty-line">👨‍🏫 {{ next_class.faculty }}</div>
+        <div class="room-line">🏫 {{ next_class.room }}</div>
+      </div>
+      {% else %}
+      <div class="current-class-box empty-box">
+        <strong>No upcoming class</strong>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="today-classes-box">
+    <h3>Today's Classes</h3>
+    {% if today_classes %}
+      {% for item in today_classes %}
+      <div class="today-class-item">
+        <span>{{ item.time }}</span>
+        <strong>{{ item.subject }}</strong>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="today-class-item muted">No classes scheduled for today.</div>
+    {% endif %}
+  </div>
+
+  <div class="table-shell">
+    <div class="timetable-table-wrap">
+      <table class="timetable-table">
+        <thead>
+          <tr>
+            <th>TIME</th>
+            {% for day in days %}
+            <th>{{ day }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for slot in slots %}
+          <tr>
+            <td class="time-cell">{{ slot.time }}</td>
+            {% for day in days %}
+            <td>
+              {% if slot.days[day] %}
+                {% for entry in slot.days[day] %}
+                <div class="subject-card {% if entry.tutorial %}tutorial{% endif %}">
+                  <div class="subject-main">📚 {{ entry.subject }}</div>
+                  <div class="faculty-room">👨‍🏫 <span>{{ entry.faculty }}</span></div>
+                  <div class="faculty-room">🏫 <span>{{ entry.room }}</span></div>
+                  {% if entry.tutorial %}
+                  <div class="tutorial-badge">Tutorial</div>
+                  {% endif %}
+                </div>
+                {% endfor %}
+              {% else %}
+                <div class="empty-slot">—</div>
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="timetable-legend">
+    <div class="legend-item"><span class="dot dot-recess"></span> Recess-1: 12:30 PM - 01:00 PM</div>
+    <div class="legend-item"><span class="dot dot-recess2"></span> Recess-2: 03:00 PM - 03:10 PM</div>
+    <div class="legend-item"><span class="dot dot-tutorial"></span> Tutorial classes marked with ^</div>
+  </div>
+</div>
+{% endblock %}

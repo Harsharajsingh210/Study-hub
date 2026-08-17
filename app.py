@@ -21,7 +21,7 @@ from flask import (Flask, render_template, request, redirect,
 from functools import wraps
 from datetime import datetime
 from werkzeug.utils import secure_filename
-import json, os, hashlib, uuid
+import json, os, hashlib, uuid, re
 
 # ─────────────────────────────────────────────────────────────
 #  App Setup
@@ -145,6 +145,135 @@ def note_matches_search(note: dict, query: str) -> bool:
         ])
 
     return any(query in str(value).lower() for value in haystacks if value is not None)
+
+
+def parse_timetable_entry(raw_entry: str, time_label: str = "") -> dict:
+    """Convert a PDF value like CHASM-BIS-F111 into a readable subject/faculty/room object."""
+    if not raw_entry:
+        return {"subject": "", "faculty": "", "room": "", "tutorial": False, "group": "", "time": time_label}
+
+    cleaned = str(raw_entry).strip().replace("^", "")
+    if not cleaned or cleaned == "-":
+        return {"subject": "", "faculty": "", "room": "", "tutorial": False, "group": "", "time": time_label}
+
+    tutorial = "^" in str(raw_entry)
+    parts = [p.strip() for p in cleaned.split("-") if p.strip()]
+
+    if len(parts) >= 4 and re.match(r"^(AT|BT)\d+$", parts[0], re.IGNORECASE):
+        group = parts[0]
+        subject = parts[1]
+        faculty = parts[2]
+        room = parts[3]
+    elif len(parts) >= 3 and re.match(r"^(AT|BT)\d+$", parts[0], re.IGNORECASE):
+        group = parts[0]
+        subject = parts[1]
+        faculty = parts[2]
+        room = parts[3] if len(parts) > 3 else ""
+    elif len(parts) >= 3:
+        group = ""
+        subject = parts[0]
+        faculty = parts[1]
+        room = parts[2]
+    else:
+        group = ""
+        subject = cleaned
+        faculty = ""
+        room = ""
+
+    return {
+        "subject": subject,
+        "faculty": faculty,
+        "room": room,
+        "tutorial": tutorial,
+        "group": group,
+        "time": time_label,
+    }
+
+
+def timetable_slots_for_class(class_schedule: dict):
+    """Return the schedule in a display-friendly structure for the template."""
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    slots = []
+    for slot in class_schedule.get("slots", []):
+        row = {"time": slot.get("time", ""), "days": {}}
+        for day in days:
+            entries = slot.get(day.lower(), []) or []
+            parsed = []
+            for entry in entries:
+                item = parse_timetable_entry(entry, slot.get("time", ""))
+                if item.get("subject"):
+                    parsed.append(item)
+            row["days"][day] = parsed
+        slots.append(row)
+    return slots
+
+
+def timetable_today_classes(class_schedule: dict, day_name: str = None):
+    """Return all classes scheduled for the provided day."""
+    if day_name is None:
+        day_name = datetime.now().strftime("%A")
+    key = day_name.lower()
+    items = []
+    for slot in class_schedule.get("slots", []):
+        entries = slot.get(key, []) or []
+        for entry in entries:
+            parsed = parse_timetable_entry(entry, slot.get("time", ""))
+            if parsed.get("subject"):
+                items.append({
+                    "time": slot.get("time", ""),
+                    "subject": parsed.get("subject"),
+                    "faculty": parsed.get("faculty"),
+                    "room": parsed.get("room"),
+                    "tutorial": parsed.get("tutorial"),
+                })
+    return items
+
+
+def timetable_current_and_next(class_schedule: dict):
+    """Return the current and next class based on the current time."""
+    now = datetime.now()
+    current_day = now.strftime("%A").lower()
+    current_minutes = now.hour * 60 + now.minute
+
+    current = None
+    next_upcoming = None
+
+    for slot in class_schedule.get("slots", []):
+        time_text = slot.get("time", "")
+        if " - " not in time_text:
+            continue
+        start_text, end_text = time_text.split(" - ", 1)
+        try:
+            start_minutes = int(start_text.split(":")[0]) * 60 + int(start_text.split(":")[1])
+            end_minutes = int(end_text.split(":")[0]) * 60 + int(end_text.split(":")[1])
+        except ValueError:
+            continue
+
+        for entry in slot.get(current_day, []) or []:
+            parsed = parse_timetable_entry(entry, time_text)
+            if not parsed.get("subject"):
+                continue
+            if start_minutes <= current_minutes < end_minutes:
+                current = {
+                    "time": time_text,
+                    "subject": parsed.get("subject"),
+                    "faculty": parsed.get("faculty"),
+                    "room": parsed.get("room"),
+                    "tutorial": parsed.get("tutorial"),
+                }
+            elif current_minutes < start_minutes:
+                next_upcoming = {
+                    "time": time_text,
+                    "subject": parsed.get("subject"),
+                    "faculty": parsed.get("faculty"),
+                    "room": parsed.get("room"),
+                    "tutorial": parsed.get("tutorial"),
+                }
+                break
+        if next_upcoming:
+            break
+
+    return current, next_upcoming
 
 
 def login_required(f):
@@ -274,6 +403,13 @@ def seed_data():
              "content": "All pending assignments must be submitted by November 5.",
              "date": "2024-10-20", "tag": "Reminder",    "tag_color": "#7209b7"},
         ])
+
+    # ── Timetable ───────────────────────────────────────────
+    if not os.path.exists(os.path.join(DATA_DIR, "timetable.json")):
+        src = os.path.join(app.root_path, "data", "timetable.json")
+        if os.path.exists(src):
+            with open(src, "r", encoding="utf-8") as f:
+                save_json("timetable.json", json.load(f))
 
     # Assignments
     if not os.path.exists(os.path.join(DATA_DIR, "assignments.json")):
@@ -579,6 +715,37 @@ def leaderboard():
     return render_template("leaderboard.html",
                            users=ranked,
                            current_user_id=session.get("user_id"))
+
+
+@app.route("/timetable")
+@login_required
+def timetable():
+    timetable_data = load_json("timetable.json")
+    classes = timetable_data.get("classes", {}) if isinstance(timetable_data, dict) else {}
+    class_names = [name for name in sorted(classes.keys(), key=lambda x: x)]
+    selected_class = request.args.get("class_name", "5A").strip()
+    if selected_class not in classes:
+        selected_class = class_names[0] if class_names else "5A"
+
+    class_schedule = classes.get(selected_class, {})
+    today = datetime.now().strftime('%A')
+    today_classes = timetable_today_classes(class_schedule, today)
+    current_class, next_class = timetable_current_and_next(class_schedule)
+
+    return render_template(
+        "timetable.html",
+        timetable_data=timetable_data,
+        selected_class=selected_class,
+        class_schedule=class_schedule,
+        class_names=class_names,
+        days=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        slots=timetable_slots_for_class(class_schedule),
+        today=today,
+        today_classes=today_classes,
+        current_class=current_class,
+        next_class=next_class,
+        classes=classes,
+    )
 
 
 # ─────────────────────────────────────────────────────────────

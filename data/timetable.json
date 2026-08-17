@@ -1,0 +1,50 @@
+{
+  "department": "Computer Engineering",
+  "semester": 5,
+  "term": "261",
+  "institution": "K. D. Polytechnic, Patan",
+  "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  "times": [
+    "08:30 - 09:30",
+    "09:30 - 10:30",
+    "10:30 - 11:30",
+    "11:30 - 12:30",
+    "01:00 - 02:00",
+    "02:00 - 03:00",
+    "03:10 - 04:10",
+    "04:10 - 05:10",
+    "05:10 - 06:10"
+  ],
+  "classes": {
+    "5A": {
+      "label": "Class 5A",
+      "term_dates": "15-JUN-2026 to 30-OCT-2026",
+      "slots": [
+        {"time": "08:30 - 09:30", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "09:30 - 10:30", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "10:30 - 11:30", "monday": ["CHASM-BIS-F111"], "tuesday": ["CHASM-BIS-F111"], "wednesday": ["CHASM-BIS-F111"], "thursday": ["CHASM-BIS-F111"], "friday": ["CHASM-BIS-F111"], "saturday": ["CHASM-BIS-F111"]},
+        {"time": "11:30 - 12:30", "monday": ["IS-CDP-F111"], "tuesday": ["IS-CDP-F111"], "wednesday": ["IS-CDP-F111"], "thursday": ["IS-CDP-F111"], "friday": ["IS-CDP-F111"], "saturday": ["IS-CDP-F111"]},
+        {"time": "01:00 - 02:00", "monday": ["IS-CDP-F111"], "tuesday": ["IIOT-PJJ-F111"], "wednesday": ["WDP-JNA-F111"], "thursday": ["WDP-JNA-F111"], "friday": ["CHASM-BIS-F111"], "saturday": []},
+        {"time": "02:00 - 03:00", "monday": ["CHASM-BIS-F111"], "tuesday": ["IS-CDP-F111"], "wednesday": ["IIOT-PJJ-F111"], "thursday": ["AT1-^ADDVC-YRP-F111", "AT2-^ADDVC-JNA-F111"], "friday": ["WDP-JNA-F111"], "saturday": []},
+        {"time": "03:10 - 04:10", "monday": ["AT1-^ADDVC-YRP-F111", "AT2-^ADDVC-JNA-F111"], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "04:10 - 05:10", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "05:10 - 06:10", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []}
+      ]
+    },
+    "5B": {
+      "label": "Class 5B",
+      "term_dates": "15-JUN-2026 to 30-OCT-2026",
+      "slots": [
+        {"time": "08:30 - 09:30", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "09:30 - 10:30", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "10:30 - 11:30", "monday": ["CHASM-MCT-F112"], "tuesday": ["CHASM-MCT-F112"], "wednesday": ["CHASM-MCT-F112"], "thursday": ["CHASM-MCT-F112"], "friday": ["CHASM-MCT-F112"], "saturday": ["CHASM-MCT-F112"]},
+        {"time": "11:30 - 12:30", "monday": ["IS-NAP-F112"], "tuesday": ["IS-NAP-F112"], "wednesday": ["IS-NAP-F112"], "thursday": ["IS-NAP-F112"], "friday": ["IS-NAP-F112"], "saturday": ["IS-NAP-F112"]},
+        {"time": "01:00 - 02:00", "monday": ["CHASM-MCT-F112"], "tuesday": ["IS-NAP-F112"], "wednesday": ["IIOT-MRT-F112"], "thursday": ["WDP-YRP-F112"], "friday": ["WDP-YRP-F112"], "saturday": []},
+        {"time": "02:00 - 03:00", "monday": ["IIOT-MRT-F112"], "tuesday": ["WDP-YRP-F112"], "wednesday": ["BT1-ADDVC-^KMM-F112", "BT2-ADDVC-^MRT-F112"], "thursday": ["CHASM-MCT-F112"], "friday": ["IS-NAP-F112"], "saturday": []},
+        {"time": "03:10 - 04:10", "monday": ["BT1-ADDVC-^KMM-F112", "BT2-ADDVC-^MRT-F112"], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "04:10 - 05:10", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []},
+        {"time": "05:10 - 06:10", "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": []}
+      ]
+    }
+  }
+}
