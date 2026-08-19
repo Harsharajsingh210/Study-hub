@@ -748,6 +748,12 @@ def timetable():
     )
 
 
+@app.route("/attendance")
+@login_required
+def attendance():
+    return render_template("attendance.html")
+
+
 # ─────────────────────────────────────────────────────────────
 #  Admin Panel
 # ─────────────────────────────────────────────────────────────

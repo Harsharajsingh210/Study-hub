@@ -34,6 +34,28 @@ class TimetableTests(unittest.TestCase):
         self.assertIn('5B', html)
         self.assertIn('Department: Computer Engineering', html)
 
+    def test_attendance_page_links_to_official_portal(self):
+        with self.client.session_transaction() as sess:
+            sess['user'] = 'Student User'
+            sess['user_id'] = 'abc123'
+            sess['is_admin'] = False
+
+        response = self.client.get('/attendance')
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        self.assertIn('College Attendance', html)
+        self.assertIn('Check your attendance directly through the official K.D. Polytechnic attendance portal.', html)
+        self.assertIn('href="https://kdppatan.ac.in/attendance/index.php"', html)
+        self.assertIn('target="_blank"', html)
+        self.assertIn('rel="noopener noreferrer"', html)
+        self.assertNotIn('<iframe', html.lower())
+        self.assertNotIn('attendance percentage', html.lower())
+
+    def test_attendance_page_requires_login(self):
+        self.client.get('/logout', follow_redirects=False)
+        response = self.client.get('/attendance')
+        self.assertEqual(response.status_code, 302)
+
 
 if __name__ == '__main__':
     unittest.main()

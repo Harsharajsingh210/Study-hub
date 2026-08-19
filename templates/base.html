@@ -24,6 +24,7 @@
       <li><a href="{{ url_for('notes') }}"       class="nav-link {% if request.endpoint=='notes'       %}active{% endif %}">Notes</a></li>
       <li><a href="{{ url_for('favorites_page') }}" class="nav-link {% if request.endpoint=='favorites_page' %}active{% endif %}">Favorites</a></li>
       <li><a href="{{ url_for('timetable') }}" class="nav-link {% if request.endpoint=='timetable' %}active{% endif %}">📅 Timetable</a></li>
+      <li><a href="{{ url_for('attendance') }}" class="nav-link {% if request.endpoint=='attendance' %}active{% endif %}">📊 Attendance</a></li>
       <li><a href="{{ url_for('assignments') }}" class="nav-link {% if request.endpoint=='assignments' %}active{% endif %}">Assignments</a></li>
       <li><a href="{{ url_for('quiz') }}"        class="nav-link {% if request.endpoint=='quiz'        %}active{% endif %}">Quiz</a></li>
       <li><a href="{{ url_for('updates') }}"     class="nav-link {% if request.endpoint=='updates'     %}active{% endif %}">Updates</a></li>
@@ -50,6 +51,7 @@
     <a href="{{ url_for('notes') }}"       class="mob-link">📚 Notes</a>
     <a href="{{ url_for('favorites_page') }}" class="mob-link">⭐ Favorites</a>
     <a href="{{ url_for('timetable') }}" class="mob-link">📅 Timetable</a>
+    <a href="{{ url_for('attendance') }}" class="mob-link">📊 Attendance</a>
     <a href="{{ url_for('assignments') }}" class="mob-link">📝 Assignments</a>
     <a href="{{ url_for('quiz') }}"        class="mob-link">🧠 Quiz</a>
     <a href="{{ url_for('updates') }}"     class="mob-link">📢 Updates</a>

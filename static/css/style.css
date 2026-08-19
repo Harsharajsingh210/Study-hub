@@ -216,6 +216,18 @@ textarea{resize:vertical}
 .ncard-arrow{margin-left:auto;color:var(--text3);font-size:1.1rem;transition:transform .2s}
 .ncard:hover .ncard-arrow{transform:translateX(4px);color:var(--text)}
 
+/* ── Attendance ─────────────────────────────────────────── */
+.attendance-card{
+  max-width:720px;margin:18px auto 0;padding:34px;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--r);box-shadow:var(--sh);text-align:center;
+  animation:fadeUp .35s ease;
+}
+.attendance-icon{font-size:2.8rem;display:block;margin-bottom:12px}
+.attendance-card h2{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;margin-bottom:10px}
+.attendance-card p{max-width:500px;margin:0 auto 24px;color:var(--text2);line-height:1.7}
+.attendance-link{gap:8px}
+
 /* ── Update strip (dashboard) ───────────────────────────── */
 .update-strip{display:flex;flex-direction:column;gap:10px}
 .ustrip-item{display:flex;align-items:flex-start;gap:14px;padding:15px 18px;background:var(--card);border-radius:var(--rs);border:1px solid var(--border)}
@@ -517,6 +529,9 @@ l-open{overflow:hidden}
   .qind{order:-1;width:100%;text-align:center}
   .result-btns{flex-direction:column}
   .auth-card{padding:28px 18px}
+  .attendance-card{padding:28px 18px;margin-top:8px}
+  .attendance-card h2{font-size:1.25rem}
+  .attendance-link{width:100%}
 }
 
 @media (max-width:480px){
