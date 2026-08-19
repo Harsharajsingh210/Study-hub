@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Attendance – StudyHub{% endblock %}
+{% block content %}
+<section class="page-hdr">
+  <h1>Attendance</h1>
+  <p>Access your official college attendance record.</p>
+</section>
+
+<section class="attendance-card" aria-labelledby="attendance-title">
+  <span class="attendance-icon" aria-hidden="true">📊</span>
+  <h2 id="attendance-title">College Attendance</h2>
+  <p>Check your attendance directly through the official K.D. Polytechnic attendance portal.</p>
+  <a
+    class="btn-primary attendance-link"
+    href="https://kdppatan.ac.in/attendance/index.php"
+    target="_blank"
+    rel="noopener noreferrer"
+  >🔗 Open Attendance Portal</a>
+</section>
+{% endblock %}
